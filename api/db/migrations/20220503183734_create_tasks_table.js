@@ -6,7 +6,7 @@ exports.up = function(knex) {
   return knex.schema.createTable('tasks', table => {
     table.increments('id');
     table.text('name');
-    table.text('notes');
+    table.text('notes').nullable();
     table.boolean('is_complete');
     table.integer('event_id');
     table.foreign('event_id').references('events.id');
