@@ -11,6 +11,7 @@ exports.up = function(knex) {
     table.text('report_path').nullable();
     table.text('tags').nullable();
     table.text('description').nullable();
+    table.boolean('is_deleted');
     table.integer('office_id').nullable();
     table.foreign('office_id').references('offices.id');
   })

@@ -9,6 +9,7 @@ exports.up = function(knex) {
     table.integer('team_id');
     table.foreign('team_id').references('teams.id')
     table.text('role')
+    table.boolean('is_deleted');
     table.primary(['user_email', 'team_id']);
   })
 };

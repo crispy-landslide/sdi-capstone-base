@@ -6,6 +6,8 @@ const knex = require('knex')(config)
 
 const router = express.Router();
 
+//TODO: REVIEW AND REFACTOR ALL ROUTES
+
 /*
 {
   Headers: Token -- only when using authentication
@@ -490,9 +492,82 @@ router.delete('/:office_id/events/:event_id', (req, res) =>{
 
       return data
     })
-    .then(data => res.status(204).json(data))
+    .then(data => res.status(200).json(data))
     .catch(() => res.sendStatus(500))
 })
 
+router.delete('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>{
+  const { office_id, event_id, team_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(401).send('Event ID not found in Office')
+  } else{
+    knex('teams').where({id: team_id, event_id: event_id}).update({is_deleted: true}, ['*'])
+      .then(async data => {
+        await knex('users_teams').where({team_id: team_id, is_deleted: false}).update({is_deleted: true})
+        .catch(() => res.sendStatus(500))
+
+        return data
+      })
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+router.delete('/:office_id/events/:event_id/tasks/:task_id', async (req, res) =>{
+  const { office_id, event_id, task_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(401).send('Event ID not found in Office')
+  } else{
+    knex('tasks').where({id: task_id, event_id: event_id}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+router.delete('/:office_id/events/:event_id/attacks/:attacks_id', async (req, res) =>{
+  const { office_id, event_id, attacks_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(401).send('Event ID not found in Office')
+  } else{
+    knex('attacks').where({id: attacks_id, event_id: event_id}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    email: <mandatory>
+  } 
+}
+*/
+router.delete('/:office_id/events/:event_id/teams/:teams_id/remove-user', async (req, res) =>{
+  const { office_id, event_id, teams_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(401).send('Event ID not found in Office')
+  } else{
+    knex('user_teams').where({teams_id: teams_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
 
 module.exports = router;

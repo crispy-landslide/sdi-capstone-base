@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const { getRandomNumber } = require('../../utils/seedUtils.js');
+const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 const fs = require('fs');
 const path = require("path");
 
@@ -10,7 +10,8 @@ const fillTeams = (users) =>{
     attackList.push({
       user_email: users[i], 
       team_id: getRandomNumber(1, 4001), 
-      role: faker.lorem.word()
+      role: faker.lorem.word(),
+      is_deleted: getRandomBool()
     });
   }
 
