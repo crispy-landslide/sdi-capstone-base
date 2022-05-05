@@ -1,15 +1,15 @@
 const { faker } = require('@faker-js/faker');
-const { getRandomNumber } = require('../../utils/seedUtils.js');
+const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateEvents = () =>{
   const eventList = [];
-  for(let i = 0; i < 3000; i++){
+  for(let i = 0; i < 1000; i++){
     let startDate;
     let endDate;
-    if(i < 1001){
+    if(i < 334){
       startDate = faker.date.past();
       endDate = faker.date.past();
-    } else if(1000 < i < 2001) {
+    } else if(333 < i < 667) {
       startDate = faker.date.past();
       endDate = faker.date.soon();
     } else {
@@ -24,6 +24,7 @@ const generateEvents = () =>{
       report_path: null, 
       office_id: getRandomNumber(1, 51), 
       tags: null, 
+      is_deleted: getRandomBool(),
       description: faker.lorem.sentences() 
     });
   }

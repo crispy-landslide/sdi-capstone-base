@@ -15,6 +15,7 @@ exports.up = function(knex) {
     table.integer('mission_impact_score');
     table.text('likelihood');
     table.integer('likelihood_score');
+    table.boolean('is_deleted');
     table.integer('event_id');
     table.foreign('event_id').references('events.id')
     

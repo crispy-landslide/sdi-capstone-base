@@ -6,6 +6,7 @@ exports.up = function(knex) {
     return knex.schema.createTable('offices', table => {
         table.increments('id');
         table.text('name');
+        table.boolean('is_deleted');
     })
 };
 

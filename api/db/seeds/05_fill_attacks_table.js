@@ -1,9 +1,11 @@
 const { faker } = require('@faker-js/faker');
-const { getRandomNumber } = require('../../utils/seedUtils.js');
+const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
+// TODO: FIX SEEDING
+// TODO: TEST EXISTING ROUTES, CREATE THE OTHER ONES
 const generateAttacks = () =>{
   const attackList = [];
-  for(let i = 0; i < 9000; i++){
+  for(let i = 0; i < 5000; i++){
     attackList.push({
       mission: getRandomNumber(1, 11), 
       attack: getRandomNumber(1, 11), 
@@ -15,7 +17,8 @@ const generateAttacks = () =>{
       mission_impact_score: getRandomNumber(1, 11), 
       likelihood: faker.lorem.word(), 
       likelihood_score: getRandomNumber(1, 11), 
-      event_id: getRandomNumber(1, 3001)
+      event_id: getRandomNumber(1, 1001),
+      is_deleted: getRandomBool()
     });
   }
 

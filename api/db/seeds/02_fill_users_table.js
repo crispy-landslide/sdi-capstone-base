@@ -5,7 +5,7 @@ const path = require("path");
 
 const generateUsers = () =>{
   const userList = [];
-  for(let i = 0; i < 10000; i++){
+  for(let i = 0; i < 1000; i++){
     let firstName = faker.name.firstName();
     let lastName = faker.name.lastName();
     let email = faker.internet.email(firstName + i, lastName);
@@ -24,7 +24,8 @@ const generateUsers = () =>{
       first_name: firstName, 
       last_name: lastName, 
       is_admin: getRandomBool(), 
-      is_editor: getRandomBool(), 
+      is_editor: getRandomBool(),
+      is_deleted: getRandomBool(),
       office_id: getRandomNumber(1, 51)
     });
   }

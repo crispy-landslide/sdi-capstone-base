@@ -8,6 +8,7 @@ exports.up = function(knex) {
     table.text('name');
     table.text('notes').nullable();
     table.boolean('is_complete');
+    table.boolean('is_deleted');
     table.integer('event_id');
     table.foreign('event_id').references('events.id');
   })

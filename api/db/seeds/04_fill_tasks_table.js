@@ -3,12 +3,13 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateTasks = () =>{
   const taskList = [];
-  for(let i = 0; i < 9000; i++){
+  for(let i = 0; i < 5000; i++){
     taskList.push({
       name: faker.lorem.word(), 
       notes: faker.lorem.sentences(), 
-      is_complete: getRandomBool(), 
-      event_id: getRandomNumber(1, 3001)
+      is_complete: getRandomBool(),
+      is_deleted: getRandomBool(), 
+      event_id: getRandomNumber(1, 1001)
     });
   }
 

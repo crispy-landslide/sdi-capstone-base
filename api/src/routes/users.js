@@ -41,4 +41,33 @@ router.get('/:user_email', (req, res) =>{
   .catch(() => res.sendStatus(500))
 })
 
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    email: <user email>
+    first_name,
+    last_name,
+    is_admin,
+    is_editor,
+    office_id
+  }
+}
+*/
+router.patch('/:user_email', (req, res) =>{
+  const { user_email } = req.params;
+
+  knex('users').where({email: user_email}).update({...req.body}, ['*'])
+  .then(data => res.status(201).json(data))
+  .catch(() => res.sendStatus(500))
+})
+
+router.delete('/:user_email', (req, res) =>{
+  const { user_email } = req.params;
+
+  knex('users').where({email: user_email}).update({is_deleted: true}, ['*'])
+    .then(data => res.status(200).json(data))
+    .catch(() => res.sendStatus(500))
+})
+
 module.exports = router;
