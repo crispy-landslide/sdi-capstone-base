@@ -469,8 +469,8 @@ router.patch('/:office_id', (req, res) =>{
   } else{
     res.status(400).send('Request body not complete. Request body should include one or more of the following: \
     { \
-      "name": <text>, \
-      "is_deleted": <boolean> \
+      "name": <text - not nullable>, \
+      "is_deleted": <boolean - not nullable> \
     }')
   }
 })
@@ -503,12 +503,12 @@ router.patch('/:office_id/events/:event_id', async (req, res) =>{
     } else{
       res.status(400).send('Request body not complete. Request body should include one or more of the following: \
       { \
-        "start_date": <dateTime>, \
-        "end_date": <dateTime>, \
-        "name": <text>, \
-        "tags": <text>, \
-        "description": <text>, \
-        "is_deleted": <boolean> \
+        "start_date": <dateTime - not nullable>, \
+        "end_date": <dateTime - not nullable>, \
+        "name": <text - not nullable>, \
+        "tags": <text - nullable>, \
+        "description": <text - nullable>, \
+        "is_deleted": <boolean - not nullable> \
       }')
     }
   }
@@ -541,10 +541,10 @@ router.patch('/:office_id/events/:event_id/tasks/:task_id', async (req, res) =>{
     } else{
       res.status(400).send('Request body not complete. Request body should include one or more of the following: \
       { \
-        "name": <text>, \
-        "notes": <text>, \
-        "is_complete": <boolean>, \
-        "is_deleted": <boolean> \
+        "name": <text - not nullable>, \
+        "notes": <text - not nullable>, \
+        "is_complete": <boolean - not nullable>, \
+        "is_deleted": <boolean - not nullable> \
       }')
     }
   }
@@ -584,17 +584,17 @@ router.patch('/:office_id/events/:event_id/attacks/:attack_id', async (req, res)
     } else{
       res.status(400).send('Request body not complete. Request body should include one or more of the following: \
       { \
-        "mission": <integer>, \
-        "attack": <integer>, \
-        "variant": <integer>, \
-        "description": <text>, \
-        "goal": <text>, \
-        "assumptions": <text>, \
-        "mission_impact": <text>, \
-        "mission_impact_score": <integer>, \
-        "likelihood": <text>, \
-        "likelihood_score": <integer>, \
-        "is_deleted": <boolean> \
+        "mission": <integer - not nullable>, \
+        "attack": <integer - not nullable>, \
+        "variant": <integer - not nullable>, \
+        "description": <text - not nullable>, \
+        "goal": <text - not nullable>, \
+        "assumptions": <text - not nullable>, \
+        "mission_impact": <text - not nullable>, \
+        "mission_impact_score": <integer - not nullable>, \
+        "likelihood": <text - not nullable>, \
+        "likelihood_score": <integer - not nullable>, \
+        "is_deleted": <boolean - not nullable> \
       }')
     }
   }
@@ -625,8 +625,8 @@ router.patch('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>{
     } else{
       res.status(400).send('Request body not complete. Request body should include one or more of the following: \
       { \
-        "name": <text>, \
-        "is_deleted": <boolean> \
+        "name": <text - not nullable>, \
+        "is_deleted": <boolean - not nullable> \
       }')
     }
   }
