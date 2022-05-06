@@ -16,19 +16,26 @@ const router = express.Router();
 }
 */
 router.post('/', (req, res) => {
+  const { email } = req.body;
+
+  if(email != undefined){
     const newUser = {
-      email: req.body.email,
+      email: email,
       first_name: null,
       last_name: null,
       is_admin: false,
       is_editor: false,
-      office_id: null
+      office_id: null,
+      is_deleted: false
     }
-
+  
     knex('users')
     .insert(newUser, ['*'])
     .then(data => res.status(201).json(data))
     .catch(() => res.sendStatus(500))
+  } else{
+    res.status(400).send('Email not provided in request body. Request body should look like: { "email": <text - non nullable> }')
+  }
 });
 
 // TODO: CHANGE USER EMAIL TO ID OF TOKEN
@@ -56,10 +63,22 @@ router.get('/:user_email', (req, res) =>{
 */
 router.patch('/:user_email', (req, res) =>{
   const { user_email } = req.params;
-
-  knex('users').where({email: user_email}).update({...req.body}, ['*'])
-  .then(data => res.status(201).json(data))
-  .catch(() => res.sendStatus(500))
+  if(Object.keys(req.body).length !== 0){
+    knex('users').where({email: user_email}).update({...req.body}, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(() => res.sendStatus(500))
+  } else{
+    res.status(400).send('Request body not complete. Request body should include one or more of the following: \
+    { \
+      "email": <text>, \
+      "first_name": <text>, \
+      "last_name": <text>, \
+      "is_admin": <boolean>, \
+      "is_editor": <boolean>, \
+      "office_id": <integer>, \
+      "is_deleted": <boolean> \
+    }')
+  }
 })
 
 router.delete('/:user_email', (req, res) =>{
