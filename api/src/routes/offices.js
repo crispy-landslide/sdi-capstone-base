@@ -252,7 +252,7 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', async (req, 
     .then(data => data[0].office_id)
     
     if(officeId != office_id){
-      res.sendStatus(400).send('Event ID not found in Office')
+      res.sendStatus(400).send('Office ID not found in event')
     } else{
 
       const newMember = {
@@ -337,7 +337,7 @@ router.get('/:office_id/events/:event_id', async (req, res) =>{
   .then(data => data[0].office_id)
 
   if(officeId != office_id){
-    res.status(401).send('Provided office ID not found in event')
+    res.status(400).send('Provided office ID not found in event')
   } else{
     await knex.select('*').from('events').where({id: event_id, office_id: office_id})
     .then(data => res.status(200).send(data))
@@ -352,7 +352,7 @@ router.get('/:office_id/events/:event_id/tasks', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Provided office ID not found in event')
+    res.status(400).send('Provided office ID not found in event')
   } else{
     await knex.select('*').from('tasks').where({event_id: event_id})
     .then(data => res.status(200).send(data))
@@ -367,7 +367,7 @@ router.get('/:office_id/events/:event_id/teams', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Provided office ID not found in event')
+    res.status(400).send('Provided office ID not found in event')
   } else{
     await knex.select('*').from('teams').where({event_id: event_id})
     .then(data => res.status(200).send(data))
@@ -385,9 +385,9 @@ router.get('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>{
   .then(data => data[0].event_id)
   
   if(officeId != office_id){
-    res.status(401).send('Provided office ID not found in event')
+    res.status(400).send('Provided office ID not found in event')
   } else if(eventId != event_id){
-    res.status(401).send('Provided event ID not found in team')
+    res.status(400).send('Provided event ID not found in team')
   } else{
     await knex.select('*').from('teams').where({team_id: team_id, event_id: event_id})
     .then(data => res.status(200).send(data))
@@ -405,9 +405,9 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', async (req, res)
   .then(data => data[0].event_id)
   
   if(officeId != office_id) {
-    res.status(401).send('Office ID not found in event')
+    res.status(400).send('Office ID not found in event')
   } else if(eventId != event_id){
-    res.status(401).send('Event ID not found in team')
+    res.status(400).send('Event ID not found in team')
   } else{
     await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id, is_deleted: false})
     .then(users => res.status(200).send(users))
@@ -422,7 +422,7 @@ router.get('/:office_id/events/:event_id/attacks', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Office ID not found in event')
+    res.status(400).send('Office ID not found in event')
   } else{
     await knex.select('*').from('attacks').where({event_id: event_id, is_deleted: false})
     .then(data => res.status(200).send(data))
@@ -440,9 +440,9 @@ router.get('/:office_id/events/:event_id/attacks/:attack_id', async (req, res) =
   .then(data => data[0].event_id)
   
   if(officeId != office_id){
-    res.status(401).send('Office ID not found in event')
+    res.status(400).send('Office ID not found in event')
   } else if(eventId != event_id){
-    res.status(401).send('Event ID not found in attack')
+    res.status(400).send('Event ID not found in attack')
   } else{
     await knex.select('*').from('attacks').where({id: attack_id, event_id: event_id})
     .then(data => res.status(200).send(data))
@@ -494,7 +494,7 @@ router.patch('/:office_id/events/:event_id', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
       await knex('events').where({id: event_id}).update({...req.body}, ['*'])
@@ -532,7 +532,7 @@ router.patch('/:office_id/events/:event_id/tasks/:task_id', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
       await knex('tasks').where({task_id: task_id, event_id: event_id}).update({...req.body}, ['*'])
@@ -575,7 +575,7 @@ router.patch('/:office_id/events/:event_id/attacks/:attack_id', async (req, res)
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
       await knex('attacks').where({id: attack_id, event_id: event_id}).update({...req.body}, ['*'])
@@ -616,7 +616,7 @@ router.patch('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>{
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
       await knex('teams').where({id: team_id, event_id: event_id}).update({...req.body}, ['*'])
@@ -645,7 +645,7 @@ router.delete('/:office_id', (req, res) =>{
 
       const teamIds = await eventIds.forEach(async eventId => {
         await knex('tasks').where({event_id: eventId, is_deleted: false}).update({is_deleted: true})
-        return await knex('teams').where({event_id: eventId, is_deleted: false}).update({is_deleted: true}, ['*'])
+        return await knex('teams').where({event_id: eventId, is_deleted: false}).update({is_deleted: true}, ['id'])
       })
 
       await teamIds.forEach(async teamId => {
@@ -658,24 +658,60 @@ router.delete('/:office_id', (req, res) =>{
     .catch(() => res.sendStatus(500))
 })
 
-router.delete('/:office_id/events/:event_id', (req, res) =>{
+router.delete('/:office_id/events/:event_id', async (req, res) =>{
+  const { office_id, event_id } = req.params;
+  
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+
+  
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('events').where({id: event_id, office_id: office_id}).update({is_deleted: true}, ['*'])
+      .then(async data => {
+        await knex('tasks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
+        .catch(() => res.sendStatus(500))
+
+        const teamIds = await knex('teams').where({event_id: event_id, is_deleted: false}).update({is_deleted: true}, ['id'])
+        .catch(() => res.sendStatus(500))
+
+        await teamIds.forEach(async teamId => {
+          await knex('users_teams').where({team_id: teamId, is_deleted: false}).update({is_deleted: true})
+        })
+
+        await knex('attacks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
+        .catch(() => res.sendStatus(500))
+
+        return data
+      })
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+router.delete('/:office_id/events/:event_id/teams', async (req, res) =>{
   const { office_id, event_id } = req.params;
 
-  knex('events').where({id: event_id, office_id: office_id}).update({is_deleted: true}, ['*'])
-    .then(async data => {
-      await knex('tasks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
-      .catch(() => res.sendStatus(500))
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('teams').where({event_id: event_id}).update({is_deleted: true}, ['*'])
+      .then(async data => {
 
-      await knex('teams').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
-      .catch(() => res.sendStatus(500))
+        await data.forEach(async team =>{
+          await knex('users_teams').where({team_id: team.id, is_deleted: false}).update({is_deleted: true})
+          .catch(() => res.sendStatus(500))
+        })
 
-      await knex('attacks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
+        return data
+      })
+      .then(data => res.status(200).json(data))
       .catch(() => res.sendStatus(500))
-
-      return data
-    })
-    .then(data => res.status(200).json(data))
-    .catch(() => res.sendStatus(500))
+  }
 })
 
 router.delete('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>{
@@ -685,7 +721,7 @@ router.delete('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     knex('teams').where({id: team_id, event_id: event_id}).update({is_deleted: true}, ['*'])
       .then(async data => {
@@ -699,6 +735,21 @@ router.delete('/:office_id/events/:event_id/teams/:team_id', async (req, res) =>
   }
 })
 
+router.delete('/:office_id/events/:event_id/tasks', async (req, res) =>{
+  const { office_id, event_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('tasks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
 router.delete('/:office_id/events/:event_id/tasks/:task_id', async (req, res) =>{
   const { office_id, event_id, task_id } = req.params;
 
@@ -706,9 +757,24 @@ router.delete('/:office_id/events/:event_id/tasks/:task_id', async (req, res) =>
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
-    knex('tasks').where({id: task_id, event_id: event_id}).update({is_deleted: true}, ['*'])
+    knex('tasks').where({id: task_id, event_id: event_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+router.delete('/:office_id/events/:event_id/attacks/', async (req, res) =>{
+  const { office_id, event_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+  
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('attacks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true}, ['*'])
       .then(data => res.status(200).json(data))
       .catch(() => res.sendStatus(500))
   }
@@ -721,7 +787,7 @@ router.delete('/:office_id/events/:event_id/attacks/:attacks_id', async (req, re
   .then(data => data[0].office_id)
   
   if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+    res.status(400).send('Office ID not found in event')
   } else{
     knex('attacks').where({id: attacks_id, event_id: event_id}).update({is_deleted: true}, ['*'])
       .then(data => res.status(200).json(data))
@@ -739,16 +805,24 @@ router.delete('/:office_id/events/:event_id/attacks/:attacks_id', async (req, re
 */
 router.delete('/:office_id/events/:event_id/teams/:teams_id/remove-user', async (req, res) =>{
   const { office_id, event_id, teams_id } = req.params;
+  const { email } = req.body;
 
-  const officeId = await knex.select('office_id').from('events').where({id: event_id})
-  .then(data => data[0].office_id)
-  
-  if(officeId != office_id){
-    res.status(401).send('Event ID not found in Office')
+  if(email != undefined){
+    const officeId = await knex.select('office_id').from('events').where({id: event_id})
+    .then(data => data[0].office_id)
+    
+    if(officeId != office_id){
+      res.status(400).send('Office ID not found in event')
+    } else{
+      knex('user_teams').where({teams_id: teams_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+        .then(data => res.status(200).json(data))
+        .catch(() => res.sendStatus(500))
+    }
   } else{
-    knex('user_teams').where({teams_id: teams_id, is_deleted: false}).update({is_deleted: true}, ['*'])
-      .then(data => res.status(200).json(data))
-      .catch(() => res.sendStatus(500))
+    res.status(400).send('Request body not complete. Request body should look like: \
+    { \
+      "email": <text - not nullable> \
+    }')
   }
 })
 
