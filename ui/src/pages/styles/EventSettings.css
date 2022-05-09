@@ -1,0 +1,55 @@
+input[type='date'] {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+}
+
+textarea {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+  width: 80%;
+  height: 300px;
+}
+
+textarea:focus {
+  outline: none;
+  border: 3px solid #4dacff;
+}
+
+input[type='date']:focus {
+  outline: none;
+  border: 3px solid #4dacff;
+}
+
+.submit {
+  margin-top: 30px;
+  margin-left: 170px;
+}
+
+.rule {
+  margin-top: 60px;
+  border: none;
+  background-color: #98bdd3;
+  height: 1px;
+}
+
+.danger-zone {
+  margin-top: 60px;
+}
+
+.delete {
+  border: 2px solid #ff3838;
+  background-color: #ff3838;
+  color: white;
+}
+
+.delete:hover {
+  border: 2px solid white;
+  background-color: #ff3838;
+  color: white;
+}

@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'BladeRunner';
+  src: url('../public/BladeRunnerMovieFont-4nx9.ttf');
+}
+
+.app {
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
+}
+
+body {
+  background-color: #1a2c40;
+  width: 100vw;
+  height: 100vh;
+  margin: 0px;
+  left: 0px;
+}
+
+.main-page {
+  transition: 0.4s;
+  position: absolute;
+  top: 80px;
+  width: 100vw;
+  color: #cbdee9;
+}

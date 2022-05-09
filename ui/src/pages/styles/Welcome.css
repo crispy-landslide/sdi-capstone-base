@@ -1,0 +1,42 @@
+.welcome {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+
+}
+
+.welcome-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.filter-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  width: 100vw
+}
+
+.button {
+  margin-inline: 10px;
+  width: 15vw;
+  padding: 10px;
+  background-color: #4dacff;
+  border-radius: 10px;
+  border: 2px solid #4dacff;
+  transition: 0.2s;
+}
+
+.button:hover {
+  transform: scale(1.05);
+  border: 2px solid #001828;
+  /* background-color: #001828; */
+  /* color: #001828 */
+}
