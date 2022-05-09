@@ -31,18 +31,19 @@ const EventSettings = () => {
   return (
     <>
       {state.currentEvent ?
+      <div className='event-wrapper'>
         <div className='event'>
-          <h1>Settings for {state.currentEvent.name}</h1>
-
           <form onSubmit={submitHandler}>
+            <h1>Settings for <input className='set-title' type='text' name='name' id='name' defaultValue={state.currentEvent.name} /></h1>
             <div className='info'>
               <div className='info-labels'>
                 <div className='entry'>Start:</div>
                 <div className='entry'>End:</div>
               </div>
               <div className='info-values'>
-                <input type='date' name='start_date' id='start_date' defaultValue={startDate ? `${startDate.getFullYear()}-${`${startDate.getMonth() + 1}`.padStart(2, '0')}-${`${startDate.getDay() + 1}`.padStart(2, '0')}` : ''} />
-                <input type='date' name='end_date' id='end_date' defaultValue={endDate ? `${endDate.getFullYear()}-${`${endDate.getMonth() + 1}`.padStart(2, '0')}-${`${endDate.getDay() + 1}`.padStart(2, '0')}` : ''} />
+                <input className='set-date' type='date' name='start_date' id='start_date' defaultValue={startDate ? `${startDate.getFullYear()}-${`${startDate.getMonth() + 1}`.padStart(2, '0')}-${`${startDate.getDay() + 1}`.padStart(2, '0')}` : ''} />
+                <input className='set-date' type='date' name='end_date' id='end_date' defaultValue={endDate ? `${endDate.getFullYear()}-${`${endDate.getMonth() + 1}`.padStart(2, '0')}-${`${endDate.getDay() + 1}`.padStart(2, '0')}` : ''} />
+
               </div>
             </div>
 
@@ -51,7 +52,7 @@ const EventSettings = () => {
                 <div>Description:</div>
               </div>
               <div className='info-values desc desc-val'>
-                <textarea name='description' id='description' defaultValue={state.currentEvent.description} />
+                <textarea className='set-text' name='description' id='description' defaultValue={state.currentEvent.description} />
               </div>
             </div>
             <input className='button submit' type='submit' value='Save Changes' />
@@ -66,7 +67,9 @@ const EventSettings = () => {
           </div>
 
 
-        </div> : <></>
+        </div>
+      </div>
+      : <></>
       }
     </>
   )

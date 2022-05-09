@@ -15,7 +15,6 @@ const EventCard = ({ event, add }) => {
       id: state.events.length + 1
     });
     state.setEvents(eventsCopy);
-
   }
 
   const onClickEvent = () => {

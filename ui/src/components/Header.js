@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import './styles/Header.css'
+import { useKeycloak } from '@react-keycloak/web'
 import { StateContext } from "../App.js";
 import { useNavigate } from 'react-router-dom'
 import Sidebar from './Sidebar'
@@ -24,6 +25,7 @@ const Header = () => {
   const state = useContext(StateContext)
   const navigate = useNavigate()
   const [showSidebar, setShowSidebar] = useState(false);
+  const { keycloak, initialized } = useKeycloak()
 
 
   const goHome = () => {
@@ -43,13 +45,33 @@ const Header = () => {
 
   }
 
+  const clickHandler = () => {
+    if (keycloak.authenticated) {
+      keycloak.logout()
+    } else {
+      keycloak.login()
+    }
+  }
+
   return (
     <>
     <Sidebar setShowSidebar={setShowSidebar}/>
     <div className='header'>
-      <div className='hamburger' onClick={clickHamburger}>{state.currentEvent ? <>&#9776;</> : ''}</div>
+      <div className='hamburger' >{state.currentEvent ? <div onClick={clickHamburger}>&#9776;</div> : ''}</div>
       <h1 className="title" onClick={goHome}>Trojn</h1>
-      <div className='spacer'>&nbsp;</div>
+      <div className='logout-wrapper' onClick={clickHandler}>
+        { keycloak.authenticated ?
+          <>
+            <img className='svg logout' src='/arrow-right-from-bracket-solid.svg' alt='logout' />
+            <div className='logout-text'>
+              {keycloak?.tokenParsed?.preferred_username}
+            </div>
+          </> :
+          <div className='logout-text login'>
+            Login
+          </div>
+        }
+      </div>
     </div>
     </>
   )
