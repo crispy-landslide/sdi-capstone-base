@@ -8,42 +8,46 @@ const router = express.Router();
 
 /*
 {
-  Headers: Token -- only when using authentication
+  Headers: Token
   Body:{
-    email: <user email>
   }
-  
+
 }
 */
 router.post('/', (req, res) => {
-  const { email } = req.body;
+  const token = req.kauth.grant.access_token.content;
 
-  if(email != undefined){
-    const newUser = {
-      email: email,
-      first_name: null,
-      last_name: null,
-      is_admin: false,
-      is_editor: false,
-      office_id: null,
-      is_deleted: false
-    }
-  
-    knex('users')
-    .insert(newUser, ['*'])
-    .then(data => res.status(201).json(data))
-    .catch(() => res.sendStatus(500))
-  } else{
-    res.status(400).send('Email not provided in request body. Request body should look like: { "email": <text - non nullable> }')
+  const newUser = {
+    id: token.sub,
+    email: token.email,
+    first_name: token.given_name,
+    last_name: token.family_name,
+    is_admin: false,
+    is_editor: false,
+    office_id: null,
+    is_deleted: false
   }
+
+  knex('users')
+  .insert(newUser, ['*'])
+  .then(data => res.status(201).json(data))
+  .catch(() => res.sendStatus(500))
 });
 
 // TODO: CHANGE USER EMAIL TO ID OF TOKEN
 // TODO: CREATE GET ROUTE FOR /my-account
-router.get('/:user_email', (req, res) =>{
-  const { user_email } = req.params;
+router.get('/:user_id', (req, res) =>{
+  const { user_id } = req.params;
 
-  knex.select('*').from('users').where({email: user_email})
+  knex.select('*').from('users').where({id: user_id})
+  .then(data => res.status(200).send(data))
+  .catch(() => res.sendStatus(500))
+})
+
+router.get('/my-account', (req, res) =>{
+  const token = req.kauth.grant.access_token.content;
+
+  knex.select('*').from('users').where({id: token.sub})
   .then(data => res.status(200).send(data))
   .catch(() => res.sendStatus(500))
 })

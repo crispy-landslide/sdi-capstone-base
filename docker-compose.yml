@@ -7,7 +7,7 @@ services:
   capstone-db:
     image: postgres
     restart: always
-    environment: 
+    environment:
      - DATABASE_HOST=127.0.0.1
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=docker
@@ -29,9 +29,13 @@ services:
       capstone-db:
         condition: service_healthy
     ports:
-      - '8080:8082'
-    environment: 
+      - '3001:8082'
+    environment:
       - NODE_ENV=development
+      - AUTH_URL=http://localhost:8080
+      - KEYCLOAK_CLIENT_ID=trojn-api
+      - KEYCLOAK_SECRET=X09FGhjLsDYa0DnLAgm39dF4mDwvmHIoLmohUtqzDCIN6VFuAoDBQGlWuRddwnO1lcnmHhOk1N1fqLRcweHVfEW5VS8fKbDK3IoEowvJEFj8nv8bS1dRxEyGmP7JL7A1
+      - REALM_PUBLIC_KEY=anxqjQgaQCgFpfLsQ4tbvIxKOOVD0mSHCFylhf6QX3eOaDSvBFUJPIq07uAEmP3byz6jvyjCODIeYL2QPfK9IEhkR6cc4Cf91tdcZPztwV73ggPRMmIuwRN5nepWYMrp
       - DATABASE_HOST=capstone-db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=docker
@@ -48,8 +52,13 @@ services:
     depends_on:
       - 'capstone-api'
     ports:
-      - '3001:3000'
+      - '3000:3000'
     volumes:
       - type: bind
         source: ./ui/src
         target: /app/src
+    environment:
+      - REACT_APP_SERVER_URL=http://localhost:3001
+      - REACT_APP_AUTH_URL=http://localhost:8080
+      - REACT_APP_KEYCLOAK_REALM=showcase-auth
+      - REACT_APP_KEYCLOAK_CLIENT=trojn-app

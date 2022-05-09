@@ -1,41 +1,35 @@
 const { faker } = require('@faker-js/faker');
 const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
-const fs = require('fs');
-const path = require("path");
+// const fs = require('fs');
+// const path = require("path");
 
 const fillTeams = (users) =>{
-  const attackList = [];
+  const teamList = [];
   for(let i = 0; i < users.length; i++){
-    // console.log(users[i])
-    attackList.push({
-      user_email: users[i], 
-      team_id: getRandomNumber(1, 4001), 
+    teamList.push({
+      user_id: users[i],
+      team_id: getRandomNumber(1, 4001),
       role: faker.lorem.word(),
       is_deleted: getRandomBool()
     });
   }
 
-  return attackList;
+  return teamList;
 }
 
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
  exports.seed = async function(knex) {
   await knex('users_teams').select('*')
-  .then((rows) => {
+  .then(async (rows) => {
     if (rows.length === 0) {
-      try {
-        const emailList = fs.readFileSync(path.resolve(__dirname, '../../utils/seedEmails.txt'), {encoding:'utf8', flag:'r'}).split('\n');
-        if(emailList[emailList.length - 1] == ''){
-          emailList.pop()
-        }
-        return knex('users_teams').insert(fillTeams(emailList));
-      
-      } catch (err) {
-        console.error(err);
-      }  
+      let userIds = await knex('users').select('id')
+        .then(users => users.map(user => user.id))
+        .catch(err => console.log(err))
+
+        return knex('users_teams').insert(fillTeams(userIds));
     }
   })
 };

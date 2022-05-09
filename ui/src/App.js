@@ -21,7 +21,7 @@ const initOptions = {
   checkLoginIframe: false,
 }
 
-const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
+// const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 export const StateContext = createContext(null);
 
@@ -30,7 +30,7 @@ function App() {
   const [users, setUsers] = useState(makeTestUsers(10))
   const [attacks, setAttacks] = useState(makeTestAttacks(30))
   const [teams, setTeams] = useState(makeTestTeams(10))
-
+  const [serverURL, setServerURL] = useState(process.env.REACT_APP_SERVER_URL || 'http://localhost:3001')
   const [currentEvent, setCurrentEvent] = useState();
   const [currentAttack, setCurrentAttack] = useState();
 
