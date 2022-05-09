@@ -1,0 +1,158 @@
+.attack-details {
+  background-color: #2d4763;
+  width: 80%;
+  border-radius: 5px;
+  border: 2px solid #001828;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.attack-details-card:hover {
+  border: 2px solid #4dacff;
+}
+
+.attack-details-id-nav {
+  background-color: #4dacff;
+  color: #001828;
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 18%;
+  border-radius: 3px;
+}
+
+.attack-details-id {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.attack-details-nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.attack-details-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.attack-details-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.attack-details-info-item {
+  width: 33%;
+}
+
+.border-details-right {
+  border-right: 2px solid #001828;
+}
+
+.border-details-bottom {
+  border-bottom: 2px solid #001828;
+}
+
+.attack-details-title {
+  text-align: center;
+  font-size: 24px;
+  margin: 10px;
+  color: #4dacff;
+}
+
+.attack-details-value {
+  text-align: left;
+  margin: 10px;
+}
+
+.scores {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.close {
+  width: 20px;
+  margin: 10px;
+  transition: 0.3s;
+}
+
+.close:hover {
+  transform: scale(1.1);
+}
+
+.edit {
+  width: 25px;
+  margin: 10px;
+  transition: 0.3s;
+}
+
+.edit:hover {
+  transform: scale(1.1);
+}
+
+.edit-text {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+  width: calc(100% - 20px);
+  height: max(20vh, 100px);
+}
+
+.edit-number {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+  width: 80%;
+}
+
+.submit-button-placeholder {
+  height: 80px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.submit-button {
+  background-color: aquamarine;
+  border: 2px solid aquamarine;
+  border-radius: 5px;
+  margin: 10px;
+  width: 80%;
+  height: 40px;
+  transition: 0.3s;
+}
+
+.submit-button:hover {
+  transform: scale(1.1);
+  border: 2px solid #182637;
+}

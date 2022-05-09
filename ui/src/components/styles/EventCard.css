@@ -2,6 +2,7 @@
   background-color: #2d4763;
   height: 20vh;
   width: 20vw;
+  min-width: 250px;
   color: #cbdee9;
   border-radius: 10px;
   display: flex;

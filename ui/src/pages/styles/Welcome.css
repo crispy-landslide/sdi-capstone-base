@@ -27,6 +27,7 @@
 .button {
   margin-inline: 10px;
   width: 15vw;
+  min-width: 150px;
   padding: 10px;
   background-color: #4dacff;
   border-radius: 10px;
@@ -39,4 +40,14 @@
   border: 2px solid #001828;
   /* background-color: #001828; */
   /* color: #001828 */
+}
+
+@media (max-width: 768px) {
+  .filter-buttons {
+    flex-direction: column;
+  }
+  .button {
+    width: 90%;
+    margin-bottom: 10px;
+  }
 }
