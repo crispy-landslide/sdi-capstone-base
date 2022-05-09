@@ -8,7 +8,7 @@ const Attacks = () => {
 
   return (
     <div className='attacks'>
-      Attacks
+      Attack names
     </div>
   )
 }
