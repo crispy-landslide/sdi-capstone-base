@@ -3,7 +3,7 @@ import { StateContext } from '../App.js'
 import './styles/AttackCard.css'
 import AttackDetails from './AttackDetails'
 
-const AttackCard = ({ attack, add }) => {
+const AttackCard = ({ attack, add, fetchAttacks }) => {
   const state = useContext(StateContext)
 
   const onAdd = () => {
@@ -58,7 +58,7 @@ const AttackCard = ({ attack, add }) => {
             </div>
           </div>
         </div> :
-        <AttackDetails attack={attack} />
+        <AttackDetails attack={attack} fetchAttacks={fetchAttacks}/>
       }
     </div>
 
