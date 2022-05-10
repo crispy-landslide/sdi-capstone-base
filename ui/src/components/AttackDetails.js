@@ -1,10 +1,13 @@
 import React, { useState, useContext } from 'react'
 import { StateContext } from '../App.js'
 import './styles/AttackDetails.css'
+import { useKeycloak } from '@react-keycloak/web'
 
-const AttackDetails = ({ attack }) => {
+const AttackDetails = ({ attack, fetchAttacks }) => {
   const state = useContext(StateContext)
   const [edit, setEdit] = useState(false)
+  const { keycloak, initialized } = useKeycloak()
+
 
   const closeHandler = () => {
     state.setCurrentAttack(null)
@@ -14,13 +17,36 @@ const AttackDetails = ({ attack }) => {
     setEdit(!edit)
   }
 
+  const patchAttack = async (updatedAttack) => {
+    const request = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      },
+      body: JSON.stringify(updatedAttack)
+    }
+
+    let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks/${attack.id}`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+    setEdit(false)
+    return await fetchAttacks();
+  }
+
   const submitHandler = (event) => {
     event.preventDefault()
     let updatedAttack = {
       description: event.target.description.value,
-      goal: event.target.description.assumptions,
+      goal: event.target.goal.value,
+      assumptions: event.target.assumptions.value,
+      mission_impact: event.target.mission_impact.value,
+      likelihood: event.target.likelihood.value,
+      mission_impact_score: event.target.mission_impact_score.value,
+      likelihood_score: event.target.likelihood_score.value
     }
-    console.log(event.target)
+    patchAttack(updatedAttack);
   }
 
   return (

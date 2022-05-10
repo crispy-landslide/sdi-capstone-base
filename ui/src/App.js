@@ -12,7 +12,6 @@ import Attacks from './pages/Attacks'
 import Report from './pages/Report'
 import EventSettings from './pages/EventSettings'
 import { ReactKeycloakProvider } from '@react-keycloak/web'
-import { makeTestEvents, makeTestUsers, makeTestAttacks, makeTestTeams } from './generateTestData'
 import keycloak from './keycloak'
 
 
@@ -37,17 +36,6 @@ function App() {
 
   const [serverURL, setServerURL] = useState(process.env.REACT_APP_SERVER_URL || 'http://localhost:3001')
 
-
-  const stateContextValues = {
-    events, setEvents,
-    users, setUsers,
-    tasks, setTasks,
-    attacks, setAttacks,
-    teams, setTeams,
-    currentEvent, setCurrentEvent,
-    currentAttack, setCurrentAttack
-  }
-
   const fetchEvents = async (user) => {
     const request = {
       method: 'GET',
@@ -61,7 +49,6 @@ function App() {
             .then(response => response.json())
             .then(data => data)
             .catch(err => console.log(err))
-    console.log(events)
     setEvents(events)
     return events
   }
@@ -89,9 +76,21 @@ function App() {
         .then(data => data)
         .catch(err => console.log(err))
     }
-    console.log(user)
     setUser(user)
     return user;
+  }
+
+  const stateContextValues = {
+    events, setEvents,
+    user, setUser,
+    users, setUsers,
+    tasks, setTasks,
+    attacks, setAttacks,
+    teams, setTeams,
+    currentEvent, setCurrentEvent,
+    currentAttack, setCurrentAttack,
+    fetchUserInfo, fetchEvents,
+    serverURL
   }
 
   const eventHandler = async (event, error) => {
@@ -104,13 +103,19 @@ function App() {
     }
   }
 
+  const refresh = async (id) => {
+    let user = await fetchUserInfo()
+    let events = await fetchEvents(user)
+    setCurrentEvent(events.find(event => event.id === id))
+  }
+
   useEffect(() => {
     let path = window.location.pathname
-    let id = Number.parseInt(path.split('/events/')[1])
+    let id = Number.parseInt(path.split('/')[2])
     if (id) {
-      setCurrentEvent(events.find(event => event.id === id))
+      keycloak.authenticated && refresh(id)
     }
-  }, []);
+  }, [keycloak.authenticated]);
 
 
   return (
