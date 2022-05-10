@@ -6,7 +6,7 @@ import './styles/Welcome.css'
 const Welcome = () => {
   const state = useContext(StateContext)
 
-  return (
+  return ( state.events ?
     <div className='welcome-wrapper'>
       <div className='filter-buttons'>
         <button className='button'>All Events</button>
@@ -17,7 +17,7 @@ const Welcome = () => {
         <EventCard event={{name: '+'}} add='add'/>
         {state.events.map(event => <EventCard key={event.name} event={event}/>)}
       </div>
-    </div>
+    </div> : ''
   )
 }
 
