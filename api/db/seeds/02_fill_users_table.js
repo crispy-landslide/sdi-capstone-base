@@ -10,18 +10,9 @@ const generateUsers = () =>{
     let lastName = faker.name.lastName();
     let email = faker.internet.email(firstName + i, lastName);
 
-    // try {
-    //   fs.writeFileSync(path.resolve(__dirname, '../../utils/seedUserIds.txt'), i + '\n', {
-    //     encoding: "utf8",
-    //     flag: "a+",
-    //   });
-    // } catch (err) {
-    //   console.error(err);
-    // }
-
     userList.push({
-      id: i,
       email: email,
+      id: i,
       first_name: firstName,
       last_name: lastName,
       is_admin: getRandomBool(),
@@ -42,14 +33,6 @@ const generateUsers = () =>{
   await knex('users').select('*')
     .then((rows) => {
       if (rows.length === 0) {
-        // try {
-        //   fs.writeFileSync(path.resolve(__dirname, '../../utils/seedUserIds.txt'), '', {
-        //     encoding: "utf8",
-        //     flag: "w",
-        //   });
-        // } catch (err) {
-        //   console.error(err);
-        // }
         return knex('users').insert(generateUsers());
       }
     })

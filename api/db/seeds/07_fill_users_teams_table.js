@@ -1,13 +1,11 @@
 const { faker } = require('@faker-js/faker');
 const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
-// const fs = require('fs');
-// const path = require("path");
 
 const fillTeams = (users) =>{
   const teamList = [];
   for(let i = 0; i < users.length; i++){
     teamList.push({
-      user_id: users[i],
+      user_email: users[i],
       team_id: getRandomNumber(1, 4001),
       role: faker.lorem.word(),
       is_deleted: getRandomBool()
@@ -25,11 +23,11 @@ const fillTeams = (users) =>{
   await knex('users_teams').select('*')
   .then(async (rows) => {
     if (rows.length === 0) {
-      let userIds = await knex('users').select('id')
-        .then(users => users.map(user => user.id))
+      let userEmails = await knex('users').select('email')
+        .then(users => users.map(user => user.email))
         .catch(err => console.log(err))
 
-        return knex('users_teams').insert(fillTeams(userIds));
+        return knex('users_teams').insert(fillTeams(userEmails));
     }
   })
 };

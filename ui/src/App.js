@@ -26,6 +26,7 @@ const initOptions = {
 export const StateContext = createContext(null);
 
 function App() {
+  const [user, setUser] = useState()
   const [events, setEvents] = useState(makeTestEvents(10))
   const [users, setUsers] = useState(makeTestUsers(10))
   const [attacks, setAttacks] = useState(makeTestAttacks(30))
@@ -43,19 +44,35 @@ function App() {
     currentAttack, setCurrentAttack
   }
 
-  const eventHandler = (event, error) => {
-    const request = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${keycloak.token}`
-      }
-    }
+  const eventHandler = async (event, error) => {
     if (event === 'onReady') {
       console.log("Ready")
     }
     if (event === 'onAuthSuccess') {
-      console.log("Auth Success")
+      const request = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${keycloak.token}`
+        }
+      }
+
+      let user = await fetch(`${serverURL}/api/users/`, request)
+              .then(async response => {
+                  if (response.status === 201) {
+                    return await response.json()
+                  }
+              })
+              .catch(err => console.log(err))
+
+      if (user === undefined) {
+        user = await fetch(`${serverURL}/api/users/my-account`, {...request, method: 'GET'})
+          .then(response => response.json())
+          .then(data => data)
+          .catch(err => console.log(err))
+      }
+      console.log(user)
+      setUser(user)
     }
   }
 

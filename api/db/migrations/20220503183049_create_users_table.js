@@ -4,15 +4,15 @@
  */
  exports.up = function(knex) {
   return knex.schema.createTable('users', table => {
-      table.text('id').primary();
-      table.text('email');
-      table.text('first_name').nullable();
-      table.text('last_name').nullable();
-      table.boolean('is_admin');
-      table.boolean('is_editor');
-      table.boolean('is_deleted');
-      table.integer('office_id').nullable();
-      table.foreign('office_id').references('offices.id');
+    table.text('email').primary();
+    table.text('id').nullable();
+    table.text('first_name').nullable();
+    table.text('last_name').nullable();
+    table.boolean('is_admin');
+    table.boolean('is_editor');
+    table.boolean('is_deleted');
+    table.integer('office_id').nullable();
+    table.foreign('office_id').references('offices.id');
   })
 };
 
