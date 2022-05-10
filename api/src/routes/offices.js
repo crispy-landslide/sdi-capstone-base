@@ -8,8 +8,8 @@ const router = express.Router();
 
 const checkIfAuthorized = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).catch(err => console.log(err))
-  if (reqUser.office_id !== req.params.office_id || !reqUser.is_admin) {
+  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
+  if (reqUser[0].office_id != req.params.office_id || !reqUser.is_admin) {
     return res.sendStatus(401)
   } else {
     next()
@@ -18,8 +18,8 @@ const checkIfAuthorized = async (req, res, next) => {
 
 const checkIfEditor = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).catch(err => console.log(err))
-  if (reqUser.office_id !== req.params.office_id || !reqUser.is_editor) {
+  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
+  if (reqUser[0].office_id != req.params.office_id || !reqUser.is_editor) {
     return res.sendStatus(401)
   } else {
     next()
@@ -28,8 +28,8 @@ const checkIfEditor = async (req, res, next) => {
 
 const checkIfBelongsToOffice = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).catch(err => console.log(err))
-  if (reqUser.office_id !== req.params.office_id) {
+  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
+  if (reqUser.office_id != req.params.office_id) {
     return res.sendStatus(401)
   } else {
     next()

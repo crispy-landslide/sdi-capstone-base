@@ -17,8 +17,7 @@ import keycloak from './keycloak'
 
 
 const initOptions = {
-  onLoad: 'check-sso',
-  checkLoginIframe: false,
+  onLoad: 'login-required'
 }
 
 // const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
@@ -27,21 +26,72 @@ export const StateContext = createContext(null);
 
 function App() {
   const [user, setUser] = useState()
-  const [events, setEvents] = useState(makeTestEvents(10))
-  const [users, setUsers] = useState(makeTestUsers(10))
-  const [attacks, setAttacks] = useState(makeTestAttacks(30))
-  const [teams, setTeams] = useState(makeTestTeams(10))
-  const [serverURL, setServerURL] = useState(process.env.REACT_APP_SERVER_URL || 'http://localhost:3001')
+  const [events, setEvents] = useState()
+
+  const [users, setUsers] = useState()
+  const [tasks, setTasks] = useState()
+  const [attacks, setAttacks] = useState()
+  const [teams, setTeams] = useState()
   const [currentEvent, setCurrentEvent] = useState();
   const [currentAttack, setCurrentAttack] = useState();
+
+  const [serverURL, setServerURL] = useState(process.env.REACT_APP_SERVER_URL || 'http://localhost:3001')
+
 
   const stateContextValues = {
     events, setEvents,
     users, setUsers,
+    tasks, setTasks,
     attacks, setAttacks,
     teams, setTeams,
     currentEvent, setCurrentEvent,
     currentAttack, setCurrentAttack
+  }
+
+  const fetchEvents = async (user) => {
+    const request = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      }
+    }
+
+    let events = await fetch(`${serverURL}/api/offices/${user.office_id}/events`, request)
+            .then(response => response.json())
+            .then(data => data)
+            .catch(err => console.log(err))
+    console.log(events)
+    setEvents(events)
+    return events
+  }
+
+  const fetchUserInfo = async () => {
+    const request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      }
+    }
+
+    let user = await fetch(`${serverURL}/api/users/`, request)
+            .then(async response => {
+                if (response.status === 201) {
+                  return await response.json()
+                }
+            })
+            .catch(err => console.log(err))
+
+    if (user === undefined) {
+      user = await fetch(`${serverURL}/api/users/my-account`, {...request, method: 'GET'})
+        .then(response => response.json())
+        .then(data => data)
+        .catch(err => console.log(err))
+    }
+    console.log(user)
+    setUser(user)
+    return user;
   }
 
   const eventHandler = async (event, error) => {
@@ -49,30 +99,8 @@ function App() {
       console.log("Ready")
     }
     if (event === 'onAuthSuccess') {
-      const request = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${keycloak.token}`
-        }
-      }
-
-      let user = await fetch(`${serverURL}/api/users/`, request)
-              .then(async response => {
-                  if (response.status === 201) {
-                    return await response.json()
-                  }
-              })
-              .catch(err => console.log(err))
-
-      if (user === undefined) {
-        user = await fetch(`${serverURL}/api/users/my-account`, {...request, method: 'GET'})
-          .then(response => response.json())
-          .then(data => data)
-          .catch(err => console.log(err))
-      }
-      console.log(user)
-      setUser(user)
+      let user = await fetchUserInfo()
+      await fetchEvents(user)
     }
   }
 
