@@ -458,9 +458,12 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
   } else if(eventId != event_id){
     res.status(400).send('Event ID not found in team')
   } else{
-    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id, is_deleted: false})
+    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id})
     .then(users => res.status(200).send(users))
-    .catch(() => res.sendStatus(500))
+    .catch((err) => {
+      console.log(err)
+      res.sendStatus(500)
+    })
   }
 })
 
@@ -814,7 +817,7 @@ router.delete('/:office_id/events/:event_id/tasks/:task_id', checkIfAuthorized, 
   }
 })
 
-router.delete('/:office_id/events/:event_id/attacks/', checkIfAuthorized, async (req, res) =>{
+router.delete('/:office_id/events/:event_id/attacks', checkIfAuthorized, async (req, res) =>{
   const { office_id, event_id } = req.params;
 
   const officeId = await knex.select('office_id').from('events').where({id: event_id})

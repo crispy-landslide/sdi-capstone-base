@@ -20,7 +20,6 @@ const router = express.Router();
 */
 router.post('/', async (req, res) => {
   const token = req.kauth.grant.access_token.content;
-  console.log(token.email)
   let newUser;
   let existingUser;
   if(Object.keys(req.body).length === 0){
@@ -30,10 +29,17 @@ router.post('/', async (req, res) => {
         .where({email: token.email})
         .update({id: token.sub, first_name: token.given_name, last_name: token.family_name}, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          console.log('First 500')
+          res.sendStatus(500)
+        })
     } else if(existingUser.length !== 0 && existingUser[0].id !== null) {
       res.sendStatus(401)
     } else{
+      console.log(token.email)
+      console.log(token.given_name)
+      console.log(token.family_name)
+      console.log(token.sub)
       newUser = {
         id: token.sub,
         email: token.email,
@@ -44,10 +50,17 @@ router.post('/', async (req, res) => {
         office_id: null,
         is_deleted: false
       }
+      console.log(newUser)
       knex('users')
         .insert(newUser, ['*'])
-        .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .then(data => {
+          console.log('inserted')
+          res.status(201).send(data[0])
+        })
+        .catch(() => {
+          console.log('Second 500')
+          res.sendStatus(500)
+        })
     }
   } else {
     const { email, first_name, last_name, office_id } = req.body
@@ -57,7 +70,10 @@ router.post('/', async (req, res) => {
         .where({email: email})
         .update({office_id: office_id}, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          console.log('Third 500')
+          res.sendStatus(500)
+        })
     } else {
       newUser = {
         id: null,
@@ -66,13 +82,16 @@ router.post('/', async (req, res) => {
         last_name: last_name,
         is_admin: false,
         is_editor: false,
-        office_id: office_id,
-        is_deleted: false
+        is_deleted: false,
+        office_id: office_id
       }
       knex('users')
         .insert(newUser, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          console.log('Fourth 500')
+          res.sendStatus(500)
+        })
     }
   }
 });
