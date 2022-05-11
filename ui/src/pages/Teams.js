@@ -32,8 +32,10 @@ const Teams = () => {
   }
 
   useEffect(async () => {
+    await setTeams(null)
+    setUsers([])
     const teams = await getTeamsData()
-    // await getUsersData(teams)    
+    await getUsersData(teams)    
   }, [])
 
   const getTeamsData = async () => {
@@ -66,19 +68,23 @@ const Teams = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    let allUsers = []
+
+    let newUsers = []
     await teams.forEach(async team => {
       await fetch(`${serverURL}/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${team.id}/users`, request)
             .then(response => response.json())
-            .then(data => {
-              let filteredUsers = data.filter(users => users.is_deleted === false)
-              allUsers = [...allUsers, ...filteredUsers]
-              console.log(allUsers)
+            .then(data => data.filter(users => users.is_deleted === false))
+            .then(filteredUsers => {
+              newUsers = [...newUsers, ...filteredUsers]
+              console.log(newUsers)
+              setUsers(newUsers)
             })
             .catch(err => console.log(err))
     })
+    
 
-    setUsers(allUsers)
+    // console.log(newUsers)
+    // await setUsers(newUsers)
   }
 
   const handleSubmit = (event) =>{
@@ -122,33 +128,33 @@ const Teams = () => {
   }
 
   return (
-    teams ? 
-    // <div>
-    //   { modalIsOpen ? 
+    teams && users ? 
+    <div>
+      { modalIsOpen ? 
 
-    //   <div className='newTabContainer'>
-    //     <div className='newTabBlock'> 
-    //       <button onClick={(e) => handleModalClose(e)}> X </button>
-    //       <h2>Create a new team!</h2>
-    //       <form className='newTabForm' onSubmit={event => handleSubmit(event)}>
-    //         <input type='text' placeholder='Give a new team name...' id='newTeamName' name='newTeamName' /> 
-    //         <input type='submit' value='submit'/>
-    //       </form>
-    //     </div>
-    //   </div>
+      <div className='newTabContainer'>
+        <div className='newTabBlock'> 
+          <button onClick={(e) => handleModalClose(e)}> X </button>
+          <h2>Create a new team!</h2>
+          <form className='newTabForm' onSubmit={event => handleSubmit(event)}>
+            <input type='text' placeholder='Give a new team name...' id='newTeamName' name='newTeamName' /> 
+            <input type='submit' value='submit'/>
+          </form>
+        </div>
+      </div>
 
-    //   :
-    //   null
-    //   } 
+      :
+      null
+      } 
       <div className='teams'>
+        {/* {console.log(users)} */}
         {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
 
 
         <RuxTabs id="tab-set-teams" small="true">
         {/* This is a dynamic a tab */}
-          {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>{team.name}</RuxTab>)}
-          {teams.map(team => console.log(team))}
-          <RuxTab id="tab-adder"> + </RuxTab>
+          {teams.map(team => <RuxTab onClick={(e) => handleModalClose(e)} id={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>{team.name} </RuxTab>)}
+          <RuxTab id="tab-adder" onClick={(e) => handleModalOpen(e)}> + </RuxTab>
         </RuxTabs>
 
         
@@ -156,11 +162,10 @@ const Teams = () => {
         <RuxTabPanels aria-labelledby="tab-set-teams">
         {teams.map((team) =>
           <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>
-            {/* <RuxButton size='medium' className='addParticipantButton' onClick={(e) => addParticipant(e)}>Add Participant</RuxButton> */}
-            {/* <RuxTable>
+            <RuxButton size='medium' className='addParticipantButton' onClick={(e) => addParticipant(e)}>Add Participant</RuxButton>
+            <RuxTable>
                 <RuxTableHeader>
                   <RuxTableHeaderRow>
-                    <RuxTableHeaderCell> {team.id} </RuxTableHeaderCell>
                     <RuxTableHeaderCell> First Name </RuxTableHeaderCell>
                     <RuxTableHeaderCell> Last Name </RuxTableHeaderCell>
                     <RuxTableHeaderCell> Role </RuxTableHeaderCell>
@@ -172,25 +177,26 @@ const Teams = () => {
                   <RuxTableBody>
                     {users?.map((user) => {
                       if(user.team_id === team.id){
+                        {/* console.log(user) */}
                         return(
                           <RuxTableRow >
                             <RuxTableCell> {user.first_name} </RuxTableCell>
                             <RuxTableCell> {user.last_name} </RuxTableCell>
                             <RuxTableCell> {user.role} </RuxTableCell>
                             <RuxTableCell> {user.email} </RuxTableCell>
-                            <RuxTableCell> {user.is_editor} </RuxTableCell>
-                            <RuxTableCell> {user.is_admin} </RuxTableCell>
+                            <RuxTableCell> {user.is_editor.toString()} </RuxTableCell>
+                            <RuxTableCell> {user.is_admin.toString()} </RuxTableCell>
                          </RuxTableRow>
                         )
                       }
                     })}
                 </RuxTableBody>
-            </RuxTable> */}
+            </RuxTable>
           </RuxTabPanel>
           )}
         </RuxTabPanels>
       </div>
-    // </div>
+    </div>
     : 
     null
   )

@@ -511,7 +511,7 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
   } else if(eventId != event_id){
     res.status(400).send('Event ID not found in team')
   } else{
-    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id, is_deleted: false})
+    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id})
     .then(users => res.status(200).send(users))
     .catch(() => res.sendStatus(500))
   }
