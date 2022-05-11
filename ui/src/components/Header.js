@@ -57,7 +57,7 @@ const Header = () => {
     <>
     <Sidebar setShowSidebar={setShowSidebar}/>
     <div className='header'>
-      <div className='hamburger' >{state.currentEvent ? <div onClick={clickHamburger}>&#9776;</div> : ''}</div>
+      <div className='hamburger' >{state.currentEvent ? <div className='hamburger-button' onClick={clickHamburger}>&#9776;</div> : ''}</div>
       <h1 className="title" onClick={goHome}>Trojn</h1>
       <div className='logout-wrapper' onClick={clickHandler}>
         { keycloak.authenticated ?

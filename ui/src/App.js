@@ -117,7 +117,6 @@ function App() {
     }
   }, [keycloak.authenticated]);
 
-
   return (
     <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions} onEvent={eventHandler}>
       <div className='app'>

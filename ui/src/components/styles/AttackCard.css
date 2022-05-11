@@ -22,6 +22,7 @@
 
 .attack-card:hover {
   border: 2px solid #4dacff;
+  cursor: pointer;
 }
 
 .attack-id {

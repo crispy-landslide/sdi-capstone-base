@@ -9,7 +9,7 @@ const router = express.Router();
 const checkIfAuthorized = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
   const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
-  if (reqUser[0].office_id != req.params.office_id || !reqUser.is_admin) {
+  if (reqUser.office_id != req.params.office_id || !reqUser.is_admin) {
     return res.sendStatus(401)
   } else {
     next()
@@ -19,7 +19,7 @@ const checkIfAuthorized = async (req, res, next) => {
 const checkIfEditor = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
   const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
-  if (reqUser[0].office_id != req.params.office_id || !reqUser.is_editor) {
+  if (reqUser.office_id != req.params.office_id || (!reqUser.is_editor && !reqUser.is_admin)) {
     return res.sendStatus(401)
   } else {
     next()
@@ -130,7 +130,7 @@ router.post('/:office_id/events', checkIfAuthorized, async (req, res) =>{
   }
 }
 */
-router.post('/:office_id/events/:event_id/tasks', checkIfAuthorized, async (req, res) =>{
+router.post('/:office_id/events/:event_id/tasks', checkIfEditor, async (req, res) =>{
 
 
   const { office_id, event_id } = req.params;
@@ -170,6 +170,50 @@ router.post('/:office_id/events/:event_id/tasks', checkIfAuthorized, async (req,
 {
   Headers: Token -- only when using authentication
   Body:{
+    name: <mandatory>,
+    notes: <null if none provided>
+  }
+}
+*/
+router.post('/:office_id/events/:event_id/missions', checkIfEditor, async (req, res) =>{
+
+
+  const { office_id, event_id } = req.params;
+  const { name, number } = req.body;
+
+  if (name != undefined && number != undefined ){
+
+    const officeId = await knex.select('office_id').from('events').where({id: event_id})
+    .then(data => data[0].office_id)
+
+    if(officeId != office_id){
+      res.sendStatus(400).send('Provided office ID not found in event')
+    } else{
+      const newMission = {
+        name,
+        number,
+        event_id: event_id,
+        is_deleted: false
+      }
+
+      await knex('missions')
+        .insert(newMission, ['*'])
+        .then(data => res.status(201).json(data))
+        .catch(() => res.sendStatus(500))
+    }
+  } else{
+    res.status(400).send('Request body not complete. Request body should look like: \
+    { \
+      "name": <text - not nullable>, \
+      "number": <integer - not nullable> \
+    }')
+  }
+})
+
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
     mission: <mandatory>,
     attack: <mandatory>,
     variant: <mandatory>,
@@ -183,18 +227,12 @@ router.post('/:office_id/events/:event_id/tasks', checkIfAuthorized, async (req,
   }
 }
 */
-router.post('/:office_id/events/:event_id/attacks', checkIfAuthorized, async (req, res) =>{
-
-  const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).catch(err => console.log(err))
-  if (reqUser.office_id !== req.params.office_id || !reqUser.is_admin) {
-    return res.sendStatus(401)
-  }
+router.post('/:office_id/events/:event_id/attacks', checkIfEditor, async (req, res) =>{
 
   const { office_id, event_id } = req.params;
-  const { mission, attack, variant, description, goal, assumptions, mission_impact, mission_impact_score, likelihood, likelihood_score } = req.body;
+  const { mission_id, attack, variant, description, goal, assumptions, mission_impact, mission_impact_score, likelihood, likelihood_score } = req.body;
 
-  if(mission != undefined && attack != undefined && variant != undefined && description != undefined &&
+  if(mission_id != undefined && attack != undefined && variant != undefined && description != undefined &&
     goal != undefined && assumptions != undefined && mission_impact != undefined && mission_impact_score != undefined &&
     likelihood != undefined && likelihood_score != undefined){
 
@@ -206,7 +244,7 @@ router.post('/:office_id/events/:event_id/attacks', checkIfAuthorized, async (re
     } else{
 
       const newAttack = {
-        mission,
+        mission_id,
         attack,
         variant,
         description,
@@ -409,6 +447,21 @@ router.get('/:office_id/events/:event_id/tasks', checkIfBelongsToOffice, async (
   }
 })
 
+router.get('/:office_id/events/:event_id/missions', checkIfBelongsToOffice, async (req, res) =>{
+  const { office_id, event_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+
+  if(officeId != office_id){
+    res.status(400).send('Provided office ID not found in event')
+  } else{
+    await knex.select('*').from('missions').where({event_id: event_id})
+    .then(data => res.status(200).send(data))
+    .catch(() => res.sendStatus(500))
+  }
+})
+
 router.get('/:office_id/events/:event_id/teams', checkIfBelongsToOffice, async (req, res) =>{
   const { office_id, event_id } = req.params;
 
@@ -584,7 +637,42 @@ router.patch('/:office_id/events/:event_id/tasks/:task_id', checkIfEditor, async
     res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
-      await knex('tasks').where({task_id: task_id, event_id: event_id}).update({...req.body}, ['*'])
+      await knex('tasks').where({id: task_id, event_id: event_id}).update({...req.body}, ['*'])
+      .then(data => res.status(201).json(data))
+      .catch(() => res.sendStatus(500))
+    } else{
+      res.status(400).send('Request body not complete. Request body should include one or more of the following: \
+      { \
+        "name": <text - not nullable>, \
+        "notes": <text - not nullable>, \
+        "is_complete": <boolean - not nullable>, \
+        "is_deleted": <boolean - not nullable> \
+      }')
+    }
+  }
+})
+
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    name,
+    number,
+    is_deleted
+  }
+}
+*/
+router.patch('/:office_id/events/:event_id/missions/:mission_id', checkIfEditor, async (req, res) =>{
+  const { office_id, event_id, mission_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+    .then(data => data[0].office_id)
+
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    if(Object.keys(req.body).length !== 0){
+      await knex('missions').where({id: mission_id, event_id: event_id}).update({...req.body}, ['*'])
       .then(data => res.status(201).json(data))
       .catch(() => res.sendStatus(500))
     } else{
@@ -619,7 +707,6 @@ router.patch('/:office_id/events/:event_id/tasks/:task_id', checkIfEditor, async
 */
 router.patch('/:office_id/events/:event_id/attacks/:attack_id', checkIfEditor, async (req, res) =>{
   const { office_id, event_id, attack_id } = req.params;
-
   const officeId = await knex.select('office_id').from('events').where({id: event_id})
   .then(data => data[0].office_id)
 
@@ -633,7 +720,7 @@ router.patch('/:office_id/events/:event_id/attacks/:attack_id', checkIfEditor, a
     } else{
       res.status(400).send('Request body not complete. Request body should include one or more of the following: \
       { \
-        "mission": <integer - not nullable>, \
+        "mission_id": <integer - not nullable>, \
         "attack": <integer - not nullable>, \
         "variant": <integer - not nullable>, \
         "description": <text - not nullable>, \
@@ -813,6 +900,37 @@ router.delete('/:office_id/events/:event_id/tasks/:task_id', checkIfAuthorized, 
       .catch(() => res.sendStatus(500))
   }
 })
+
+router.delete('/:office_id/events/:event_id/missions/', checkIfAuthorized, async (req, res) =>{
+  const { office_id, event_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('missions').where({event_id: event_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
+router.delete('/:office_id/events/:event_id/missions/:mission_id', checkIfAuthorized, async (req, res) =>{
+  const { office_id, event_id, mission_id } = req.params;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    knex('missions').where({id: mission_id, event_id: event_id}).update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  }
+})
+
 
 router.delete('/:office_id/events/:event_id/attacks/', checkIfAuthorized, async (req, res) =>{
   const { office_id, event_id } = req.params;
