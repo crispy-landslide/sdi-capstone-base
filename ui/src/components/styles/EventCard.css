@@ -17,7 +17,8 @@
 .event-card:hover {
   transform: scale(1.05);
   border: 2px solid #3c89cb;
-  color: #3c89cb
+  color: #3c89cb;
+  cursor: pointer;
 }
 
 .add {

@@ -18,14 +18,14 @@ const generateEvents = () =>{
     }
 
     eventList.push({
-      start_date: startDate, 
-      end_date: endDate, 
-      name: faker.lorem.word(), 
-      report_path: null, 
-      office_id: getRandomNumber(1, 51), 
-      tags: null, 
+      start_date: startDate,
+      end_date: endDate,
+      name: faker.lorem.word(),
+      report_path: null,
+      office_id: getRandomNumber(1, 51),
+      tags: null,
       is_deleted: getRandomBool(),
-      description: faker.lorem.sentences() 
+      description: faker.lorem.sentences()
     });
   }
 
@@ -34,7 +34,7 @@ const generateEvents = () =>{
 
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
 exports.seed = async function(knex) {
   await knex('events').select('*')
