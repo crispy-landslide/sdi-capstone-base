@@ -15,7 +15,7 @@ const Welcome = () => {
       </div>
       <div className='welcome'>
         <EventCard event={{name: '+'}} add='add'/>
-        {state.events.map(event => <EventCard key={event.name} event={event}/>)}
+        {state.events.map(event => <EventCard key={event.id} event={event}/>)}
       </div>
     </div> : ''
   )

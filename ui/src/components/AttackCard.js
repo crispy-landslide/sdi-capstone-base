@@ -3,7 +3,7 @@ import { StateContext } from '../App.js'
 import './styles/AttackCard.css'
 import AttackDetails from './AttackDetails'
 
-const AttackCard = ({ attack, add, fetchAttacks }) => {
+const AttackCard = ({ attack, mission, missions, add, fetchAttacks, refresh }) => {
   const state = useContext(StateContext)
 
   const onAdd = () => {
@@ -29,7 +29,7 @@ const AttackCard = ({ attack, add, fetchAttacks }) => {
       {state.currentAttack?.id !== attack.id ?
         <div className='attack-card'>
           <div className='attack-id'>
-            {`M${attack.mission}A${attack.attack}V${attack.variant}`}
+            {`M${mission.number}A${attack.attack}V${attack.variant}`}
           </div>
           <div className='attack-info'>
             <div className='attack-info-item border-right border-bottom'>
@@ -58,7 +58,7 @@ const AttackCard = ({ attack, add, fetchAttacks }) => {
             </div>
           </div>
         </div> :
-        <AttackDetails attack={attack} fetchAttacks={fetchAttacks}/>
+        <AttackDetails attack={attack} mission={mission} missions={missions} fetchAttacks={fetchAttacks} refresh={refresh}/>
       }
     </div>
 

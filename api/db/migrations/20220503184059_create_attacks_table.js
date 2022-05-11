@@ -5,7 +5,8 @@
 exports.up = function(knex) {
   return knex.schema.createTable('attacks', table => {
     table.increments('id');
-    table.integer('mission');
+    table.integer('mission_id');
+    table.foreign('mission_id').references('missions.id')
     table.integer('attack');
     table.integer('variant');
     table.text('description');
@@ -18,7 +19,7 @@ exports.up = function(knex) {
     table.boolean('is_deleted');
     table.integer('event_id');
     table.foreign('event_id').references('events.id')
-    
+
   })
 };
 

@@ -8,3 +8,32 @@
   justify-content: center;
   align-items: center;
 }
+
+.add-attack-button {
+  width: 50%;
+  margin: 10px;
+  background-color: #001828;
+  color: white;
+  border: 2px solid #001828;
+  border-radius: 5px;
+  font-size: 32px;
+
+}
+
+.add-attack-button:hover {
+  border: 2px solid #4dacff;
+  color: #4dacff;
+  cursor: pointer;
+}
+
+.edit-mission {
+  width: 10px;
+  position: relative;
+  top: -10px;
+  left: 10px;
+  transition: 0.4s;
+}
+
+.edit-mission:hover {
+  transform: scale(1.1);
+}
