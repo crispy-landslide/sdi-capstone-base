@@ -40,3 +40,27 @@
   display: flex;
   justify-content: right;
 }
+
+.formContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #001828;
+  /* width: 500px; */
+  height: 200px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* .formContainer h2 {
+  bottom: 0;
+  right: 0;
+} */
+
+
+
+
+
+
+

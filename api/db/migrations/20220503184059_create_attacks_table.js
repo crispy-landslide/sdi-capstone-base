@@ -30,6 +30,7 @@ exports.up = function(knex) {
 exports.down = function(knex) {
   return knex.schema.alterTable('attacks', table =>{
     table.dropForeign('event_id');
+    table.dropForeign('mission_id');
   })
   .then(() => knex.schema.dropTableIfExists('attacks'))
 };

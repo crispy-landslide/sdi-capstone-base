@@ -30,16 +30,11 @@ router.post('/', async (req, res) => {
         .update({id: token.sub, first_name: token.given_name, last_name: token.family_name}, ['*'])
         .then(data => res.status(201).json(data[0]))
         .catch(() => {
-          console.log('First 500')
           res.sendStatus(500)
         })
     } else if(existingUser.length !== 0 && existingUser[0].id !== null) {
       res.sendStatus(401)
     } else{
-      console.log(token.email)
-      console.log(token.given_name)
-      console.log(token.family_name)
-      console.log(token.sub)
       newUser = {
         id: token.sub,
         email: token.email,
@@ -50,7 +45,6 @@ router.post('/', async (req, res) => {
         office_id: null,
         is_deleted: false
       }
-      console.log(newUser)
       knex('users')
         .insert(newUser, ['*'])
         .then(data => {
@@ -58,7 +52,6 @@ router.post('/', async (req, res) => {
           res.status(201).send(data[0])
         })
         .catch(() => {
-          console.log('Second 500')
           res.sendStatus(500)
         })
     }
@@ -71,7 +64,6 @@ router.post('/', async (req, res) => {
         .update({office_id: office_id}, ['*'])
         .then(data => res.status(201).json(data[0]))
         .catch(() => {
-          console.log('Third 500')
           res.sendStatus(500)
         })
     } else {
@@ -89,7 +81,6 @@ router.post('/', async (req, res) => {
         .insert(newUser, ['*'])
         .then(data => res.status(201).json(data[0]))
         .catch(() => {
-          console.log('Fourth 500')
           res.sendStatus(500)
         })
     }

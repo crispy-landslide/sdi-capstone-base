@@ -325,15 +325,17 @@ router.post('/:office_id/events/:event_id/teams', checkIfAuthorized, async (req,
   Headers: Token -- only when using authentication
   Body:{
     email: <mandatory>,
-    role: <mandatory>
+    role: <mandatory>,
+    is_admin,
+    is_editor
   }
 }
 */
 router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAuthorized, async (req, res) =>{
-  const { office_id, event_id } = req.params;
-  const { email, role } = req.body;
+  const { office_id, event_id, team_id } = req.params;
+  const { email, role, is_admin, is_editor } = req.body;
 
-  if(email != undefined && role != undefined){
+  if(email != undefined || role != undefined || is_admin != undefined || is_editor != undefined){
 
     const officeId = await knex.select('office_id').from('events').where({id: event_id})
     .then(data => data[0].office_id)
@@ -341,24 +343,59 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
     if(officeId != office_id){
       res.sendStatus(400).send('Office ID not found in event')
     } else{
+      let existingUser = await knex('users').select('*').where({email: email})
+      if(existingUser.length === 0 ){
+        const newUser = {
+          id: null,
+          email: email,
+          first_name: null,
+          last_name: null,
+          is_admin: Boolean(is_admin),
+          is_editor: Boolean(is_editor),
+          office_id: office_id,
+          is_deleted: false
+        }
+        await knex('users')
+          .insert(newUser, ['*'])
+          .catch((err) => {
+            console.log(err)
+            res.sendStatus(500)
+          })
+        }
 
-      const newMember = {
-        email,
-        role,
-        is_deleted: false,
-        team_id: event_id
-      }
-
-      await knex('users_teams')
-        .insert(newMember, ['*'])
-        .then(data => res.status(201).json(data))
-        .catch(() => res.sendStatus(500))
+      let existingKey = await knex('users_teams').select('*').where({user_email: email, team_id: team_id})
+      if(existingKey.length !== 0 ){
+        await knex('users_teams')
+          .where({user_email: email, team_id: team_id})
+          .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
+          .catch((err) => {
+            console.log(err)
+            res.sendStatus(500)
+          })
+        } else{
+          const newMember = {
+            user_email: email,
+            role: role,
+            is_deleted: false,
+            team_id: team_id
+          }
+    
+          await knex('users_teams')
+            .insert(newMember, ['*'])
+            .then(data => res.status(201).json(data))
+            .catch((err) => {
+              console.log(err)
+              res.sendStatus(500)
+            })
+        }
     }
   } else{
     res.status(400).send('Request body not complete. Request body should look like: \
     { \
       "email": <text - not nullable>, \
       "role": <text - not nullable> \
+      "is_admin": <boolean - not nullable> \
+      "is_editor": <boolean - not nullable> \
     }')
   }
 })
@@ -768,6 +805,45 @@ router.patch('/:office_id/events/:event_id/teams/:team_id', checkIfAuthorized, a
   }
 })
 
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    email,
+    role: <mandatory>,
+    is_admin,
+    is_editor
+  }
+}
+*/
+router.patch('/:office_id/events/:event_id/teams/:team_id/edit-user', checkIfAuthorized, async (req, res) =>{
+  const { office_id, event_id, team_id } = req.params;
+  const { email, role, is_admin, is_editor } = req.body;
+
+  const officeId = await knex.select('office_id').from('events').where({id: event_id})
+  .then(data => data[0].office_id)
+
+  if(officeId != office_id){
+    res.status(400).send('Office ID not found in event')
+  } else{
+    if(Object.keys(req.body).length !== 0){
+      await knex('users').where({email: email, office_id: office_id}).update({is_admin: is_admin, is_editor: is_editor})
+        .catch(() => res.sendStatus(500))
+      await knex('users_teams').where({user_email: email, team_id: team_id}).update({role: role}, ['*'])
+        .then(data => res.status(201).json(data))
+        .catch(() => res.sendStatus(500))
+    } else{
+      res.status(400).send('Request body not complete. Request body should include one or more of the following: \
+      { \
+        email: <text - not nullable>, \
+        role: <text - not nullable>, \
+        is_admin: <boolean - not nullable>, \
+        is_editor <boolean - not nullable>\
+      }')
+    }
+  }
+})
+
 router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
   const { office_id } = req.params;
 
@@ -970,8 +1046,8 @@ router.delete('/:office_id/events/:event_id/attacks/:attacks_id', checkIfAuthori
   }
 }
 */
-router.delete('/:office_id/events/:event_id/teams/:teams_id/remove-user', checkIfAuthorized, async (req, res) =>{
-  const { office_id, event_id, teams_id } = req.params;
+router.delete('/:office_id/events/:event_id/teams/:team_id/remove-user', checkIfAuthorized, async (req, res) =>{
+  const { office_id, event_id, team_id } = req.params;
   const { email } = req.body;
 
   if(email != undefined){
@@ -981,7 +1057,7 @@ router.delete('/:office_id/events/:event_id/teams/:teams_id/remove-user', checkI
     if(officeId != office_id){
       res.status(400).send('Office ID not found in event')
     } else{
-      knex('user_teams').where({teams_id: teams_id, is_deleted: false}).update({is_deleted: true}, ['*'])
+      knex('users_teams').where({user_email: email, team_id: team_id, is_deleted: false}).update({is_deleted: true}, ['*'])
         .then(data => res.status(200).json(data))
         .catch(() => res.sendStatus(500))
     }
