@@ -25,7 +25,6 @@ exports.seed = async function(knex) {
     return missionList
   }
   // Deletes ALL existing entries
-  await knex('missions').del()
   await knex('missions').select('*')
   .then(async (rows) => {
     if (rows.length === 0) {

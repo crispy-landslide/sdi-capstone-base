@@ -1,0 +1,35 @@
+.low {
+  background-color: #00b050;
+}
+
+.medium {
+  background-color: #ffff00;
+
+}
+
+.high {
+  background-color: #c00000;
+}
+
+.risk-block {
+  height: 12vh;
+  width: 12vh;
+  border: 1px solid black;
+}
+
+.risk-block:hover {
+  border: 5px solid #1b4061;
+}
+
+.label {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 4vh;
+}
+
+.label:hover {
+  border: none;
+}
