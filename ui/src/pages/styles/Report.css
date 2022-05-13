@@ -1,3 +1,56 @@
+.report-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .report {
   margin: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.vertical-line {
+  background-color: #001828;
+  border: none;
+  width: 2px;
+  height: 75vh;
+  margin-inline: 5vw;
+}
+
+.info-item {
+  font-size: max(24px, 4vh);
+  margin-bottom: 10vh;
+}
+
+.info-high {
+  color: #c00000;
+}
+
+.info-medium {
+  color: #ffff00;
+}
+
+.info-low {
+  color: #00b050;
+}
+
+@media (max-width: 768px) {
+  .info-item {
+    margin-bottom: 20px;
+  }
+  .report {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .vertical-line {
+    height: 2px;
+    width: 90vw;
+    margin-block: 20px;
+  }
 }

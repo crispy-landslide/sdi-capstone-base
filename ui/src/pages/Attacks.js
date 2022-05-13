@@ -9,7 +9,6 @@ import AttackDetails from '../components/AttackDetails'
 
 const Attacks = () => {
   const state = useContext(StateContext)
-  const [missions, setMissions] = useState();
   const { keycloak, initialized } = useKeycloak();
   const [addAttack, setAddAttack] = useState(false);
   const [editMission, setEditMission] = useState(false)
@@ -26,7 +25,9 @@ const Attacks = () => {
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
-    setMissions(await missions.filter(mission => !mission.is_deleted).sort((a, b) => a.number - b.number))
+    let newMissions = await missions.filter(mission => !mission.is_deleted).sort((a, b) => a.number - b.number)
+    state.setMissions(newMissions)
+    return newMissions
   }
 
   const addAttackHandler = async (e) => {
@@ -52,7 +53,7 @@ const Attacks = () => {
 
   }
 
-  const fetchAttacks = async () => {
+  const fetchAttacks = async (missions) => {
     const request = {
       method: 'GET',
       headers: {
@@ -66,23 +67,30 @@ const Attacks = () => {
       .then(data => data)
       .catch(err => console.log(err))
 
-    state.setAttacks(attacks.filter(attack => !attack.is_deleted))
-    return attacks
+    console.log(missions)
+    let newAttacks = attacks.filter(attack => {
+      let matchingMissions = missions.filter(mission => mission.id === attack.mission_id)
+      return !attack.is_deleted && matchingMissions.length > 0
+    })
+
+    state.setAttacks(newAttacks)
+
+    return newAttacks
   }
 
   const refresh = async () => {
-    setMissions(null)
+    await state.setMissions(null)
     let user = state.user ?? await state.fetchUserInfo()
     await state.fetchEvents(user)
-    await fetchMissions()
-    let newAttacks = await fetchAttacks()
+    let newMissions = await fetchMissions()
+    let newAttacks = await fetchAttacks(newMissions)
   }
 
   useEffect(() => {
     if (state.user === undefined) {
-
+      state.setMissions(null)
     } else {
-      keycloak.authenticated && state.currentEvent && (fetchMissions() && fetchAttacks())
+      keycloak.authenticated && state.currentEvent && refresh()
     }
   }, [state.user, keycloak.authenticated, state.currentEvent])
 
@@ -154,20 +162,24 @@ const Attacks = () => {
       .catch(err => console.log(err))
 
     setEditMission(false);
-    refresh();
-
+    await refresh();
+    state.setCurrentMission(addedMission);
   }
 
 
-  return ( missions && state.attacks ?
+  return ( state.missions && state.attacks ?
     <div className='attacks'>
     <RuxTabs id="tab-set-id-1" small>
-      {missions.map(mission => <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`}>{mission.name}</RuxTab>)}
+      {state.missions.map(mission =>
+        <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`} selected={state.currentMission && mission.id === state.currentMission.id ? 'selected': false} onClick={() => state.setCurrentMission(mission)}>
+          {mission.name}
+        </RuxTab>
+      )}
       <RuxTab id="tab-id-add">+</RuxTab>
     </RuxTabs>
 
     <RuxTabPanels aria-labelledby="tab-set-id-1">
-      {missions.map(mission => {
+      {state.missions.map(mission => {
         return (
           <RuxTabPanel aria-labelledby={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`}>
             <div className='attack-list'>
@@ -190,7 +202,7 @@ const Attacks = () => {
               </h2>
               <button className='add-attack-button' onClick={() => setAddAttack(!addAttack)}>+</button>
               {addAttack ? <AttackDetails attack={{}} fetchAttacks={fetchAttacks} addAttack='true' setAddAttack={setAddAttack} refresh={refresh} mission={mission}/> : ''}
-              {filterAndSortAttacks(state.attacks, mission).map(attack => <AttackCard key={`attack-id-M${mission.number}A${attack.attack}V${attack.variant}`} attack={attack} mission={mission} missions={missions} fetchAttacks={fetchAttacks} refresh={refresh}/>)}
+              {filterAndSortAttacks(state.attacks, mission).map(attack => <AttackCard key={`attack-id-M${mission.number}A${attack.attack}V${attack.variant}`} attack={attack} mission={mission} fetchAttacks={fetchAttacks} refresh={refresh}/>)}
             </div>
           </RuxTabPanel>
         )

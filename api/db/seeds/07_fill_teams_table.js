@@ -3,10 +3,10 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateTeams = () =>{
   const teamsList = [];
-  for(let i = 0; i < 4000; i++){
+  for(let i = 0; i < 300; i++){
     teamsList.push({
-      name: faker.lorem.word(), 
-      event_id: getRandomNumber(1, 1001),
+      name: faker.lorem.word(),
+      event_id: getRandomNumber(1, 25),
       is_deleted: getRandomBool()
     });
   }
@@ -16,7 +16,7 @@ const generateTeams = () =>{
 
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
  exports.seed = async function(knex) {
   await knex('teams').select('*')

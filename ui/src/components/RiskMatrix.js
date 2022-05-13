@@ -13,7 +13,7 @@ const RiskMatrix = ({ attacks }) => {
       for(let i = 5; i >= 0; i--) {
         const riskColumns = [];
         for (let j = 0; j <= 5; j++) {
-          riskColumns.push(<RiskBlock key={`risk-block-${i}-${j}`} row={i} column={j} attacks={attacks.filter(attack => i === attack.mission_impact_score && j === attack.likelihood_score)}/>)
+          riskColumns.push(<RiskBlock key={`risk-block-${i}-${j}`} row={j} column={i} attacks={attacks.filter(attack => j === attack.mission_impact_score && i === attack.likelihood_score)}/>)
         }
         riskRows.push(<div key={`risk-row-${i}`} className='risk-row'>{riskColumns}</div>)
       }

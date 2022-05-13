@@ -31,6 +31,8 @@ function App() {
   const [tasks, setTasks] = useState()
   const [attacks, setAttacks] = useState()
   const [teams, setTeams] = useState()
+  const [missions, setMissions] = useState()
+  const [currentMission, setCurrentMission] = useState()
   const [currentEvent, setCurrentEvent] = useState();
   const [currentAttack, setCurrentAttack] = useState();
 
@@ -87,6 +89,8 @@ function App() {
     tasks, setTasks,
     attacks, setAttacks,
     teams, setTeams,
+    missions, setMissions,
+    currentMission, setCurrentMission,
     currentEvent, setCurrentEvent,
     currentAttack, setCurrentAttack,
     fetchUserInfo, fetchEvents,
