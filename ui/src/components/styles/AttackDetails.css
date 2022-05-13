@@ -2,7 +2,7 @@
   background-color: #2d4763;
   width: 80%;
   border-radius: 5px;
-  border: 2px solid #001828;
+  border: 2px solid aquamarine;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -15,7 +15,7 @@
 }
 
 .attack-details-id-nav {
-  background-color: #4dacff;
+  background-color: #001828;
   color: #001828;
   font-size: 24px;
   display: flex;
@@ -98,6 +98,8 @@
   width: 20px;
   margin: 10px;
   transition: 0.3s;
+  -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+  filter: invert(100%);
 }
 
 .close:hover {
@@ -109,6 +111,8 @@
   width: 25px;
   margin: 10px;
   transition: 0.3s;
+  -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+  filter: invert(100%);
 }
 
 .edit:hover {
@@ -120,6 +124,8 @@
   width: 25px;
   margin: 10px;
   transition: 0.3s;
+  -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+  filter: invert(100%);
 }
 
 .trash:hover {
@@ -176,12 +182,16 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  color: #cbdee9;
 }
 
 .edit-id {
   width: 50%;
+  padding-inline: 10px;
 }
 
 .attack-id-component {
-  width: 30%
+  width: 30%;
+  color: #cbdee9;
+  text-align: center;
 }

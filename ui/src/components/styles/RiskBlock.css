@@ -1,0 +1,61 @@
+.low {
+  background-color: #00b050;
+}
+
+.medium {
+  background-color: #ffff00;
+
+}
+
+.high {
+  background-color: #c00000;
+  color: white;
+}
+
+.risk-block {
+  height: 12vh;
+  width: 12vh;
+  border: 2px solid #001828;
+  overflow: auto;
+}
+
+.risk-block:hover {
+  border: 2px solid white;
+}
+
+.label {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 4vh;
+}
+
+.label:hover {
+  border: none;
+}
+
+.attack-ids {
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 2vh;
+}
+
+.attack-id-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .risk-block {
+    height: 60px;
+    width: 60px;
+  }
+  .attack-ids {
+    font-size: 10px;
+  }
+}

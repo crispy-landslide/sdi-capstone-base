@@ -10,6 +10,7 @@ import Teams from './pages/Teams'
 import Tasks from './pages/Tasks'
 import Attacks from './pages/Attacks'
 import Report from './pages/Report'
+import AddOffice from './pages/AddOffice'
 import EventSettings from './pages/EventSettings'
 import { ReactKeycloakProvider } from '@react-keycloak/web'
 import keycloak from './keycloak'
@@ -31,6 +32,8 @@ function App() {
   const [tasks, setTasks] = useState()
   const [attacks, setAttacks] = useState()
   const [teams, setTeams] = useState()
+  const [missions, setMissions] = useState()
+  const [currentMission, setCurrentMission] = useState()
   const [currentEvent, setCurrentEvent] = useState();
   const [currentAttack, setCurrentAttack] = useState();
 
@@ -49,7 +52,7 @@ function App() {
             .then(response => response.json())
             .then(data => data)
             .catch(err => console.log(err))
-    setEvents(events)
+    events?.length > 0 && setEvents(events.filter(event => !event.is_deleted))
     return events
   }
 
@@ -66,6 +69,8 @@ function App() {
             .then(async response => {
                 if (response.status === 201) {
                   return await response.json()
+                } else {
+                  console.log(response.status)
                 }
             })
             .catch(err => console.log(err))
@@ -87,6 +92,8 @@ function App() {
     tasks, setTasks,
     attacks, setAttacks,
     teams, setTeams,
+    missions, setMissions,
+    currentMission, setCurrentMission,
     currentEvent, setCurrentEvent,
     currentAttack, setCurrentAttack,
     fetchUserInfo, fetchEvents,
@@ -99,6 +106,7 @@ function App() {
     }
     if (event === 'onAuthSuccess') {
       let user = await fetchUserInfo()
+      console.log(user)
       await fetchEvents(user)
     }
   }
@@ -112,8 +120,8 @@ function App() {
   useEffect(() => {
     let path = window.location.pathname
     let id = Number.parseInt(path.split('/')[2])
-    if (id) {
-      keycloak.authenticated && refresh(id)
+    if (id && keycloak.authenticated) {
+      refresh(id)
     }
   }, [keycloak.authenticated]);
 
@@ -124,7 +132,8 @@ function App() {
           <Header />
           <div className='main-page' id='main-page'>
             <Routes>
-              <Route path='/' element={<Welcome />} />
+              {user ? <Route path='/' element={user.office_id ? <Welcome /> : <AddOffice />} /> : ''
+              }
               <Route path='/events/:id' element={<Event />} />
               <Route path='/events/:id/teams' element={<Teams />} />
               <Route path='/events/:id/tasks' element={<Tasks />} />

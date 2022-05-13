@@ -30,11 +30,21 @@
 
 .hamburger {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
   height: 100%;
   width: 200px;
   margin-left: 10px;
+}
+
+.event-name {
+  margin-left: 20px;
+}
+
+.event-name:hover {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .hamburger-button {
@@ -58,7 +68,7 @@
 }
 
 .logout {
-  width: max(60px, 5vh);
+  /* width: max(60px, 5vh); */
   transition: 0.3s;
 }
 
@@ -84,11 +94,9 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  width: 200px;
 }
 
-.logout-wrapper {
-  width: max(100px, 10vh);
-}
 
 .svg {
   width: max(20px, 2vh);

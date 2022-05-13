@@ -6,7 +6,7 @@ const fillTeams = (users) =>{
   for(let i = 0; i < users.length; i++){
     teamList.push({
       user_email: users[i],
-      team_id: getRandomNumber(1, 4001),
+      team_id: getRandomNumber(1, 300),
       role: faker.lorem.word(),
       is_deleted: getRandomBool()
     });

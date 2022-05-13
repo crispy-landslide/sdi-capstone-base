@@ -2,19 +2,42 @@ import React, { useContext } from 'react'
 import { StateContext } from '../App.js'
 import './styles/EventCard.css'
 import { useNavigate } from 'react-router-dom'
+import { useKeycloak } from '@react-keycloak/web'
 
 const EventCard = ({ event, add }) => {
-  const state = useContext(StateContext)
-  const navigate = useNavigate()
+  const state = useContext(StateContext);
+  const navigate = useNavigate();
+  const { keycloak, initialized } = useKeycloak();
 
-  const onAdd = () => {
-    console.log("Add event");
-    const eventsCopy = [...state.events]
-    eventsCopy.push({
-      name: `System ${state.events.length + 1} CTT`,
-      id: state.events.length + 1
-    });
-    state.setEvents(eventsCopy);
+  const onAdd = async () => {
+    const newEvent = {
+      start_date: (new Date()).toISOString(),
+      end_date: (new Date()).toISOString(),
+      name: `System ${state.events ? state.events.length + 1 : ''} CTT`,
+      report_path: '',
+      tags: '',
+      description: '',
+      is_deleted: false,
+      office_id: state.user.office_id
+    }
+    const request = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      },
+      body: JSON.stringify(newEvent)
+    }
+    let url = `${state.serverURL}/api/offices/${state.user.office_id}/events`
+
+    const returnEvent = await fetch(url, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.error(err))
+
+    state.setCurrentEvent(returnEvent[0])
+    await state.fetchEvents(state.user);
+    navigate(`/events/${returnEvent[0].id}/settings`)
   }
 
   const onClickEvent = () => {

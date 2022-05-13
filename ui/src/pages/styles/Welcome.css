@@ -36,11 +36,21 @@
 }
 
 .button:hover {
-  transform: scale(1.05);
-  border: 2px solid #001828;
+  /* transform: scale(1.05); */
+  border: 2px solid #2d4763;
   cursor: pointer;
+  color: #2d4763;
   /* background-color: #001828; */
   /* color: #001828 */
+}
+
+.active {
+  border: 2px solid aquamarine;
+  color: #2d4763;
+}
+
+.active:hover {
+  border: 2px solid aquamarine;
 }
 
 @media (max-width: 768px) {
