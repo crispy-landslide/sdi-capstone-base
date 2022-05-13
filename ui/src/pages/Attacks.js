@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { StateContext } from '../App.js'
 import './styles/Attacks.css'
 import { useKeycloak } from '@react-keycloak/web'
@@ -12,28 +13,8 @@ const Attacks = () => {
   const { keycloak, initialized } = useKeycloak();
   const [addAttack, setAddAttack] = useState(false);
   const [editMission, setEditMission] = useState(false)
+  const navigate = useNavigate();
 
-  const fetchMissions = async () => {
-    const request = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${keycloak.token}`
-      }
-    }
-    let missions = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions`, request)
-      .then(response => response.json())
-      .then(data => data)
-      .catch(err => console.log(err))
-    let newMissions = await missions.filter(mission => !mission.is_deleted).sort((a, b) => a.number - b.number)
-    state.setMissions(newMissions)
-    return newMissions
-  }
-
-  const addAttackHandler = async (e) => {
-    e.preventDefault();
-
-  }
 
   const compareFunction = (a, b) => {
     if (a.attack === b.attack) {
@@ -53,6 +34,23 @@ const Attacks = () => {
 
   }
 
+  const fetchMissions = async () => {
+    const request = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      }
+    }
+    let missions = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+    let newMissions = await missions.filter(mission => !mission.is_deleted).sort((a, b) => a.number - b.number)
+    state.setMissions(newMissions)
+    return newMissions
+  }
+
   const fetchAttacks = async (missions) => {
     const request = {
       method: 'GET',
@@ -67,7 +65,6 @@ const Attacks = () => {
       .then(data => data)
       .catch(err => console.log(err))
 
-    console.log(missions)
     let newAttacks = attacks.filter(attack => {
       let matchingMissions = missions.filter(mission => mission.id === attack.mission_id)
       return !attack.is_deleted && matchingMissions.length > 0
@@ -78,12 +75,13 @@ const Attacks = () => {
     return newAttacks
   }
 
-  const refresh = async () => {
+  const refresh = async (currentMission) => {
     await state.setMissions(null)
     let user = state.user ?? await state.fetchUserInfo()
     await state.fetchEvents(user)
     let newMissions = await fetchMissions()
     let newAttacks = await fetchAttacks(newMissions)
+    currentMission && state.setCurrentMission(currentMission)
   }
 
   useEffect(() => {
@@ -162,8 +160,14 @@ const Attacks = () => {
       .catch(err => console.log(err))
 
     setEditMission(false);
-    await refresh();
-    state.setCurrentMission(addedMission);
+    await refresh(addedMission);
+  }
+
+  const changeMissionHandler = (mission) => {
+    state.setCurrentMission(mission)
+    if (window.location.href.indexOf('#attack-id-') > -1) {
+      navigate(window.location.pathname)
+    }
   }
 
 
@@ -171,7 +175,7 @@ const Attacks = () => {
     <div className='attacks'>
     <RuxTabs id="tab-set-id-1" small>
       {state.missions.map(mission =>
-        <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`} selected={state.currentMission && mission.id === state.currentMission.id ? 'selected': false} onClick={() => state.setCurrentMission(mission)}>
+        <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`} selected={state.currentMission && mission.id === state.currentMission.id ? 'selected': false} onClick={() => changeMissionHandler(mission)}>
           {mission.name}
         </RuxTab>
       )}

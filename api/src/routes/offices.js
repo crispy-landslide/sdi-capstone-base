@@ -56,18 +56,23 @@ router.post('/', async (req, res) => {
       is_deleted: false
     }
 
-    const officeId = await knex('offices')
-    .insert(newOffice, ['*'])
-    .then(data => {
-      res.status(201).json(data)
-      return data[0].id
-    })
-    .catch(() => res.sendStatus(500))
+    const createdOffice = await knex('offices')
+      .insert(newOffice, ['*'])
+      .then(data => data)
+      .catch(() => res.sendStatus(500))
 
-    knex('users')
-    .where({email: token.email})
-    .update({office_id: officeId, is_admin: true})
-
+    if (createdOffice) {
+      let updatedUser = await knex('users')
+        .where({email: token.email})
+        .update({office_id: createdOffice[0].id, is_admin: true})
+        .returning('*')
+        .catch(() => res.sendStatus(500))
+      if (updatedUser) {
+        res.status(201).json(createdOffice[0])
+      }
+    } else {
+      res.sendStatus(500)
+    }
   } else{
     res.status(400).send('Request body not complete. Request body should look like: \
     { \
@@ -105,7 +110,7 @@ router.post('/:office_id/events', checkIfAuthorized, async (req, res) =>{
       is_deleted: false
     }
 
-    knex('events')
+    await knex('events')
     .insert(newEvent, ['*'])
     .then(data => res.status(201).json(data))
     .catch(() => res.sendStatus(500))
@@ -511,9 +516,12 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
   } else if(eventId != event_id){
     res.status(400).send('Event ID not found in team')
   } else{
-    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id, is_deleted: false})
+    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id})
     .then(users => res.status(200).send(users))
-    .catch(() => res.sendStatus(500))
+    .catch(err => {
+      console.log(err)
+      res.sendStatus(500)
+    })
   }
 })
 

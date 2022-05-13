@@ -75,8 +75,14 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
       .catch(err => console.log(err))
     setEdit(false)
     addAttack && setAddAttack(false)
-    state.setCurrentMission(mission)
-    return await fetchAttacks(state.missions);
+
+    let newAttacks = await fetchAttacks(state.missions);
+    if (updatedAttack.mission_id === mission.id) {
+      refresh(mission)
+    } else {
+      refresh(state.missions.filter(mission => mission.id === updatedAttack.mission_id)[0])
+    }
+    return newAttacks
   }
 
   const submitHandler = (event) => {
@@ -94,7 +100,7 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
       variant: event.target.variant.value
     }
     patchAttack(updatedAttack);
-    refresh()
+
   }
 
 
@@ -124,13 +130,13 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
                   <span className='attack-id-component'>
                     A&nbsp;
                   </span>
-                  <input className='edit-number edit-id' type='number' name='attack' id='attack' min='0' defaultValue={attack.attack}/>
+                  <input className='edit-number edit-id' type='number' name='attack' id='attack' min='0' defaultValue={attack.attack} required/>
                 </div>
                 <div className='edit-attack-id'>
                   <span className='attack-id-component'>
                     V&nbsp;
                   </span>
-                  <input className='edit-number edit-id' type='number' name='variant' id='variant' min='0' defaultValue={attack.variant}/>
+                  <input className='edit-number edit-id' type='number' name='variant' id='variant' min='0' defaultValue={attack.variant} required/>
                 </div>
               </div> :
               <div className={`attack-details-id info-${riskLevel}`}>
@@ -140,7 +146,7 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
 
             <div className='submit-button-placeholder'>
               {edit || addAttack ?
-                <input className='submit-button' type='submit' value='Save Changes' /> :
+                <input className='submit-button' type='submit' value='Save Changes' required/> :
                 <>&nbsp;</>
               }
 
@@ -212,7 +218,7 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
                   </div>
                   <div className='attack-details-value'>
                     {edit || addAttack ?
-                      <input className='edit-number' type='number' name='mission_impact_score' id='mission_impact_score' min='1' max='5' defaultValue={attack.mission_impact_score}/> :
+                      <input className='edit-number' type='number' name='mission_impact_score' id='mission_impact_score' min='1' max='5' defaultValue={attack.mission_impact_score || 1}/> :
                       attack.mission_impact_score
                     }
                   </div>
@@ -223,7 +229,7 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
                   </div>
                   <div className='attack-details-value'>
                     {edit || addAttack ?
-                      <input className='edit-number' type='number' name='likelihood_score' id='likelihood_score' min='1' max='5' defaultValue={attack.likelihood_score}/> :
+                      <input className='edit-number' type='number' name='likelihood_score' id='likelihood_score' min='1' max='5' defaultValue={attack.likelihood_score || 1}/> :
                       attack.likelihood_score
                     }
                   </div>
