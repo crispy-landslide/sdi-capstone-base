@@ -3,13 +3,27 @@ import { StateContext } from '../App.js'
 import './styles/AttackDetails.css'
 import { useKeycloak } from '@react-keycloak/web'
 
-const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, setAddAttack, refresh}) => {
+const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack, refresh}) => {
   const state = useContext(StateContext)
   const [edit, setEdit] = useState(false)
   const { keycloak, initialized } = useKeycloak()
+  const [riskLevel, setRiskLevel] = useState();
 
   useEffect(() => {
+    if (attack.mission_impact_score + attack.likelihood_score >= 8) {
+      setRiskLevel('high');
+    }  else if (attack.likelihood_score === 1 || attack.mission_impact_score + attack.likelihood_score <= 5) {
+      setRiskLevel('low')
+    } else {
+      setRiskLevel('medium')
+    }
+    state.setCurrentMission(state.missions.filter(mission => mission.id === attack.mission_id)[0])
     addAttack && state.setCurrentAttack(null)
+    if (window.location.href.indexOf('#attack-id-') > -1) {
+      let attackID = window.location.href.split('/attacks#')[1].split('&')[0]
+      let element = document.getElementById(attackID);
+      element && element.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"});
+    }
   }, [])
 
   const closeHandler = () => {
@@ -61,7 +75,14 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
       .catch(err => console.log(err))
     setEdit(false)
     addAttack && setAddAttack(false)
-    return await fetchAttacks();
+
+    let newAttacks = await fetchAttacks(state.missions);
+    if (updatedAttack.mission_id === mission.id) {
+      refresh(mission)
+    } else {
+      refresh(state.missions.filter(mission => mission.id === updatedAttack.mission_id)[0])
+    }
+    return newAttacks
   }
 
   const submitHandler = (event) => {
@@ -79,12 +100,12 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
       variant: event.target.variant.value
     }
     patchAttack(updatedAttack);
-    refresh()
+
   }
 
 
   return (
-        <form className='attack-details' onSubmit={submitHandler}>
+        <form className='attack-details' onSubmit={submitHandler} id={`attack-id-${attack.id}`}>
           <div className='attack-details-id-nav'>
               <div className='attack-details-nav'>
                 <img className='close' src='/x-solid.svg' alt='close' onClick={closeHandler} title='close attack'/>
@@ -95,11 +116,11 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
               <div className='attack-details-edit-id'>
                 <div className='edit-attack-id'>
                   <span className='attack-id-component'>
-                    M:&nbsp;
+                    M&nbsp;
                   </span>
                   {!addAttack ? <select className='edit-number edit-id' type='number' name='mission' id='mission' defaultValue={mission.id}>
                     <option hidden value={mission.id}>{`${mission.number}: ${mission.name}`}</option>
-                    {missions.map(m => <option key={m.id} value={m.id}>{`${m.number}: ${m.name}`}</option>)}
+                    {state.missions.map(m => <option key={m.id} value={m.id}>{`${m.number}: ${m.name}`}</option>)}
                   </select> :
                   <div className='edit-id'>
                     {mission.number}
@@ -107,25 +128,25 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
                 </div>
                 <div className='edit-attack-id'>
                   <span className='attack-id-component'>
-                    A:&nbsp;
+                    A&nbsp;
                   </span>
-                  <input className='edit-number edit-id' type='number' name='attack' id='attack' min='0' defaultValue={attack.attack}/>
+                  <input className='edit-number edit-id' type='number' name='attack' id='attack' min='0' defaultValue={attack.attack} required/>
                 </div>
                 <div className='edit-attack-id'>
                   <span className='attack-id-component'>
-                    V:&nbsp;
+                    V&nbsp;
                   </span>
-                  <input className='edit-number edit-id' type='number' name='variant' id='variant' min='0' defaultValue={attack.variant}/>
+                  <input className='edit-number edit-id' type='number' name='variant' id='variant' min='0' defaultValue={attack.variant} required/>
                 </div>
               </div> :
-              <div className='attack-details-id'>
+              <div className={`attack-details-id info-${riskLevel}`}>
               {`M${mission.number}A${attack.attack}V${attack.variant}`}
               </div>
             }
 
             <div className='submit-button-placeholder'>
               {edit || addAttack ?
-                <input className='submit-button' type='submit' value='Save Changes' /> :
+                <input className='submit-button' type='submit' value='Save Changes' required/> :
                 <>&nbsp;</>
               }
 
@@ -197,7 +218,7 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
                   </div>
                   <div className='attack-details-value'>
                     {edit || addAttack ?
-                      <input className='edit-number' type='number' name='mission_impact_score' id='mission_impact_score' min='1' max='5' defaultValue={attack.mission_impact_score}/> :
+                      <input className='edit-number' type='number' name='mission_impact_score' id='mission_impact_score' min='1' max='5' defaultValue={attack.mission_impact_score || 1}/> :
                       attack.mission_impact_score
                     }
                   </div>
@@ -208,7 +229,7 @@ const AttackDetails = ({ attack, mission, missions, fetchAttacks, addAttack, set
                   </div>
                   <div className='attack-details-value'>
                     {edit || addAttack ?
-                      <input className='edit-number' type='number' name='likelihood_score' id='likelihood_score' min='1' max='5' defaultValue={attack.likelihood_score}/> :
+                      <input className='edit-number' type='number' name='likelihood_score' id='likelihood_score' min='1' max='5' defaultValue={attack.likelihood_score || 1}/> :
                       attack.likelihood_score
                     }
                   </div>

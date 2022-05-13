@@ -1,10 +1,21 @@
-import React, { useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { StateContext } from '../App.js'
 import './styles/AttackCard.css'
 import AttackDetails from './AttackDetails'
 
-const AttackCard = ({ attack, mission, missions, add, fetchAttacks, refresh }) => {
+const AttackCard = ({ attack, mission, add, fetchAttacks, refresh }) => {
   const state = useContext(StateContext)
+  const [riskLevel, setRiskLevel] = useState();
+
+  useEffect(() => {
+    if (attack.mission_impact_score + attack.likelihood_score >= 8) {
+      setRiskLevel('high');
+    }  else if (attack.likelihood_score === 1 || attack.mission_impact_score + attack.likelihood_score <= 5) {
+      setRiskLevel('low')
+    } else {
+      setRiskLevel('medium')
+    }
+  }, [])
 
   const onAdd = () => {
     console.log("Add event");
@@ -28,7 +39,7 @@ const AttackCard = ({ attack, mission, missions, add, fetchAttacks, refresh }) =
     <div className='attack-card-wrapper' onClick={clickHandler}>
       {state.currentAttack?.id !== attack.id ?
         <div className='attack-card'>
-          <div className='attack-id'>
+          <div className={`attack-id info-${riskLevel}`}>
             {`M${mission.number}A${attack.attack}V${attack.variant}`}
           </div>
           <div className='attack-info'>
@@ -58,7 +69,7 @@ const AttackCard = ({ attack, mission, missions, add, fetchAttacks, refresh }) =
             </div>
           </div>
         </div> :
-        <AttackDetails attack={attack} mission={mission} missions={missions} fetchAttacks={fetchAttacks} refresh={refresh}/>
+        <AttackDetails attack={attack} mission={mission} fetchAttacks={fetchAttacks} refresh={refresh}/>
       }
     </div>
 

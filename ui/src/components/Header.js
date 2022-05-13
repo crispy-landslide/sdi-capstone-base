@@ -27,6 +27,12 @@ const Header = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const { keycloak, initialized } = useKeycloak()
 
+  const goToEvent = () => {
+    setShowSidebar(false)
+    closeNav()
+    navigate(`/events/${state.currentEvent.id}`)
+  }
+
 
   const goHome = () => {
     state.setCurrentEvent(null)
@@ -57,7 +63,14 @@ const Header = () => {
     <>
     <Sidebar setShowSidebar={setShowSidebar}/>
     <div className='header'>
-      <div className='hamburger' >{state.currentEvent ? <div className='hamburger-button' onClick={clickHamburger}>&#9776;</div> : ''}</div>
+      <div className='hamburger' >
+        {state.currentEvent ?
+        <>
+          <div className='hamburger-button' onClick={clickHamburger}>&#9776;</div>
+          <div className='event-name' onClick={goToEvent}>{state.currentEvent.name}</div>
+        </>
+          : ''}
+      </div>
       <h1 className="title" onClick={goHome}>Trojn</h1>
       <div className='logout-wrapper' onClick={clickHandler}>
         { keycloak.authenticated ?

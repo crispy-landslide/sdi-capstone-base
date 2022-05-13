@@ -20,7 +20,6 @@ const router = express.Router();
 */
 router.post('/', async (req, res) => {
   const token = req.kauth.grant.access_token.content;
-  console.log(token.email)
   let newUser;
   let existingUser;
   if(Object.keys(req.body).length === 0){

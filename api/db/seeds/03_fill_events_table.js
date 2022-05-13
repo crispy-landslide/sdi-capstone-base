@@ -3,7 +3,7 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateEvents = () =>{
   const eventList = [];
-  for(let i = 0; i < 1000; i++){
+  for(let i = 0; i < 25; i++){
     let startDate;
     let endDate;
     if(i < 334){

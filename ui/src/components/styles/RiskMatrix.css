@@ -1,0 +1,56 @@
+.risk-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.risk-matrix {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.y-label-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 3;
+  padding: 0px;
+  /* width: 78vh;
+  height: 78vh; */
+}
+
+.y-label {
+  height: calc(78vh - calc(12vh + 6vh));
+  margin-bottom: calc(12vh + 6vh);
+  writing-mode: sideways-lr;
+  font-size: 4vh;
+  text-align: center;
+}
+
+.x-label-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.x-label {
+  font-size: 4vh;
+  text-align: center;
+  width: calc(100% - 12vh);
+  margin-left: 12vh;
+}
+
+@media (max-width: 768px) {
+  .x-label {
+    font-size: 24px;
+  }
+  .y-label {
+    font-size: 24px;
+  }
+}

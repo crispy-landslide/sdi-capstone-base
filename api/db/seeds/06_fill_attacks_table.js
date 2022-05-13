@@ -27,9 +27,9 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
         goal: faker.lorem.sentences(),
         assumptions: faker.lorem.sentences(),
         mission_impact: faker.lorem.sentences(),
-        mission_impact_score: getRandomNumber(1, 11),
+        mission_impact_score: getRandomNumber(1, 5),
         likelihood: faker.lorem.word(),
-        likelihood_score: getRandomNumber(1, 11),
+        likelihood_score: getRandomNumber(1, 5),
         event_id: event.id,
         is_deleted: getRandomBool()
       });

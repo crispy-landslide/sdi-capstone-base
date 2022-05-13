@@ -37,3 +37,30 @@
 .edit-mission:hover {
   transform: scale(1.1);
 }
+
+.edit-mission-number {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+  width: 40px;
+  margin-right: 5px;
+}
+
+.edit-name {
+  background-color: #182637;
+  border: 3px solid #98bdd3;
+  border-radius: 5px;
+  color: #cbdee9;
+  padding: 10px;
+  width: max(20vw - 100px);
+  margin-left: 20px;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
