@@ -1,11 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { StateContext } from '../App.js'
-// import './styles/Teams.css'
 import keycloak from '../keycloak'
+import '../pages/styles/Teams.css'
 
 import { RuxButton } from '@astrouxds/react'
 
-const EditParticipant = ({user, refresh}) => {
+const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
   const { currentEvent } = useContext(StateContext)
 
   const patchParticipant = (event, user) => {
@@ -50,49 +50,57 @@ const EditParticipant = ({user, refresh}) => {
   const removeParticipant = (event, user) => {
     event.preventDefault()
 
-    let editedParticipant = {
-      email: user.email
-    }
+    if (window.confirm('Are you sure you want to remove this participant?')) {
+      let editedParticipant = {
+        email: user.email
+      }
 
-    let request = {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${keycloak.token}`,
-        'Content-Type' : 'application/json'
-      },
-      body: JSON.stringify(editedParticipant)
-    }
+      let request = {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${keycloak.token}`,
+          'Content-Type' : 'application/json'
+        },
+        body: JSON.stringify(editedParticipant)
+      }
 
-    fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${user.team_id}/remove-user`, request)
-    .then(response => response.json())
-    .then(data => refresh())
-    .catch(err => console.log(err))
+      fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${user.team_id}/remove-user`, request)
+      .then(response => response.json())
+      .then(data => refresh())
+      .catch(err => console.log(err))
+    }
   }
 
-  return(
-    user !== null ? 
-      <div className='formContainer'>
-        <h2 className='formHeader'>Editing a participant:</h2>
-        <form className='form' onSubmit={e => patchParticipant(e, user)}>
-          <p>First Name: {user.first_name}</p>
-          <p>Last Name: {user.last_name}</p>
-          <label>
-            Role:
-            <input type="text" name="role" id='role'/>
-          </label>
-          <p>Email: {user.email}</p>
-          <label htmlFor="permission_select">Permission Level:</label>
-            <select name="permissions" id="permission_select">
-                <option value="participant">Participant</option>
-                <option value="editor">Editor</option>
-                <option value="admin">Admin</option>
-            </select>
-          <input type="submit" value="Submit" />
-        </form>
-        <RuxButton size='medium' className='removeParticipantButton' onClick={(e) => removeParticipant(e, user)}> Remove participant </RuxButton>
+  return( 
+      <div className='formContainer-wrapper'>
+        <div className='formContainer'>
+          <div className='formHeader'>
+            <img className='close' src='/x-solid.svg' alt='close' onClick={() => setEditUser(null)} title='close component'/>
+            <h2>Edit a participant!</h2>
+            <img className='trash' src='/trash-solid.svg' alt='delete' onClick={(e) => removeParticipant(e, user)} title='delete attack'/>
+          </div>
+          <form className='form' onSubmit={e => patchParticipant(e, user)}>
+            <p>First Name: {user.first_name ?? 'N/A'}</p>
+            <p>Last Name: {user.last_name ?? 'N/A'}</p>
+            <label>
+              Role:
+              <div className='inputs'> <input type="text" name="role" id='role' required /> </div>
+            </label>
+            <p>Email: {user.email}</p>
+            <label className="permission-title" htmlFor="permission_select">Permission Level:</label>
+            <div className='inputs'>
+              <select name="permissions" id="permission_select">
+                  <option value="participant">Participant</option>
+                  <option value="editor">Editor</option>
+                  <option value="admin">Admin</option>
+              </select>
+            </div>
+            <div className='buttons'>
+              <input type="submit" value="Submit" />
+            </div>
+          </form>
+        </div>
       </div>
-    :
-    null
   )
 }
 

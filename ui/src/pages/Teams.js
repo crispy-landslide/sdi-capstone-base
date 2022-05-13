@@ -27,7 +27,7 @@ const Teams = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    //below grabs all the teams for this particular event
+    // below grabs all the teams for this particular event
     let teams = await fetch(`${serverURL}/api/offices/${user.office_id}/events/${currentEvent.id}/teams`, request)
             .then(response => response.json())
             .then(data => {
@@ -39,7 +39,6 @@ const Teams = () => {
     
     return teams
   }
-
 
   const getUsersData = async (teams) => {
     await setUsers([])
@@ -68,7 +67,9 @@ const Teams = () => {
     let currentUser = user ?? await fetchUserInfo()
     await fetchEvents(currentUser)
     const teams = await getTeamsData()
-    await getUsersData(teams)  
+    await getUsersData(teams)
+    setAddingUser(false)
+    setEditUser(null)
   }
 
   const determinePermissionLevel = (user) =>{
@@ -102,79 +103,102 @@ const Teams = () => {
     .then(data => refreshComponent())
     .catch(err => console.log(err))
   }
+  
+  const closeComponents = (event) =>{
+    event.preventDefault()
+
+    if(user.is_admin){
+      if(addingUser === true || editUser !== null){
+        setAddingUser(false)
+        setEditUser(null)
+      }
+    }
+  }
+
+  const renderSubComponents = (team) =>{
+    if(addingUser){
+      editUser != null ? setEditUser(null) : null;
+      return <AddParticipant team={team} refresh={refreshComponent} setAddingUser={setAddingUser} setEditUser={setEditUser} />
+    } else if(editUser != null){
+      addingUser ? setAddingUser(false) : null;
+      return <EditParticipant user={editUser} refresh={refreshComponent} setEditUser={setEditUser} setAddingUser={setAddingUser} />
+    } else{
+      return null;
+    }
+  }
 
   return (
-    teams && users ? 
-      <div className='teams'>
-        {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
+      teams && users ? 
+        <div className='teams'>
+          {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
 
-        <RuxTabs id="tab-set-teams" small="true">
-        {/* This is a dynamic a tab */}
-          {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>{team.name} </RuxTab>)}
-          <RuxTab id="tab-add-team"> + </RuxTab>
-        </RuxTabs>
+          <RuxTabs id="tab-set-teams" small="true">
+          {/* This is a dynamic a tab */}
+            {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`} onClick={(e) => closeComponents(e)}>{team.name} </RuxTab>)}
+            <RuxTab id="tab-add-team"> + </RuxTab>
+          </RuxTabs>
 
-        
-        {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
-        <RuxTabPanels aria-labelledby="tab-set-teams">
-        {teams.map((team) =>
-          <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>
-            <RuxButton size='medium' className='addParticipantButton'
-            onClick={() => 
-              {
-                if(user.is_admin){
-                  setAddingUser(true)
-                }
-              }
-            }>
-              Add participant
-            </RuxButton>
-            <EditParticipant user={editUser} refresh={refreshComponent} />
-            <AddParticipant user={user} addingUser={addingUser} team={team} refresh={refreshComponent} />
-            <RuxTable>
-                <RuxTableHeader>
-                  <RuxTableHeaderRow>
-                    <RuxTableHeaderCell> First Name </RuxTableHeaderCell>
-                    <RuxTableHeaderCell> Last Name </RuxTableHeaderCell>
-                    <RuxTableHeaderCell> Role </RuxTableHeaderCell>
-                    <RuxTableHeaderCell> Email </RuxTableHeaderCell>
-                    <RuxTableHeaderCell> Permissions </RuxTableHeaderCell>
-                    <RuxTableHeaderCell></RuxTableHeaderCell>
-                  </RuxTableHeaderRow>
-                </RuxTableHeader>
-                  <RuxTableBody>
-                    {users?.map((user) => {
-                      if(user.team_id === team.id){
-                        return(
-                          <RuxTableRow >
-                            <RuxTableCell> {user.first_name ?? 'N/A'} </RuxTableCell>
-                            <RuxTableCell> {user.last_name ?? 'N/A'} </RuxTableCell>
-                            <RuxTableCell> {user.role} </RuxTableCell>
-                            <RuxTableCell> {user.email} </RuxTableCell>
-                            <RuxTableCell> {determinePermissionLevel(user)} </RuxTableCell>
-                            <RuxTableCell> <img className='svg' src='/pencil-solid.svg' alt='edit' title='edit user' onClick={() => setEditUser(user)}/> </RuxTableCell>
-                         </RuxTableRow>
-                        )
-                      }
-                    })}
-                </RuxTableBody>
-            </RuxTable>
-          </RuxTabPanel>
-          )}
-          <RuxTabPanel aria-labelledby="tab-add-team" key="tab-add-team">
-            <h2>Create a new team!</h2>
-            <form onSubmit={e => submitNewTeam(e)}>
-              <label>
-                Team Name:
-                <input type="text" name="team-name" id='team_name'/>
-              </label>
-              <input type="submit" value="Submit" />
-            </form>
-          </RuxTabPanel>
-        </RuxTabPanels>
-      </div>
-    : 
-    null
+          
+          {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
+          <RuxTabPanels aria-labelledby="tab-set-teams">
+          {teams.map((team) =>
+            <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>
+              <RuxButton size='medium' className='addParticipantButton' onClick={() => { 
+                if(user.is_admin){ 
+                  editUser != null ? setEditUser(null) : null;
+                  setAddingUser(true) 
+                  }}}>
+                Add participant
+              </RuxButton>
+              {renderSubComponents(team)}
+              <RuxTable>
+                  <RuxTableHeader>
+                    <RuxTableHeaderRow>
+                      <RuxTableHeaderCell> First Name </RuxTableHeaderCell>
+                      <RuxTableHeaderCell> Last Name </RuxTableHeaderCell>
+                      <RuxTableHeaderCell> Role </RuxTableHeaderCell>
+                      <RuxTableHeaderCell> Email </RuxTableHeaderCell>
+                      <RuxTableHeaderCell> Permissions </RuxTableHeaderCell>
+                      <RuxTableHeaderCell></RuxTableHeaderCell>
+                    </RuxTableHeaderRow>
+                  </RuxTableHeader>
+                    <RuxTableBody>
+                      {users?.map((currUser) => {
+                        if(currUser.team_id === team.id){
+                          return(
+                            <RuxTableRow >
+                              <RuxTableCell> {currUser.first_name ?? 'N/A'} </RuxTableCell>
+                              <RuxTableCell> {currUser.last_name ?? 'N/A'} </RuxTableCell>
+                              <RuxTableCell> {currUser.role} </RuxTableCell>
+                              <RuxTableCell> {currUser.email} </RuxTableCell>
+                              <RuxTableCell> {determinePermissionLevel(currUser)} </RuxTableCell>
+                              <RuxTableCell> <img className='edit' src='/pencil-solid.svg' alt='edit' title='edit user' 
+                              onClick={() => { 
+                                addingUser ? setAddingUser(false) : null;
+                                setEditUser(currUser) 
+                                }}/> </RuxTableCell>
+                          </RuxTableRow>
+                          )
+                        }
+                      })}
+                  </RuxTableBody>
+              </RuxTable>
+            </RuxTabPanel>
+            )}
+            <RuxTabPanel aria-labelledby="tab-add-team" key="tab-add-team">
+              <h2>Create a new team!</h2>
+              <form onSubmit={e => submitNewTeam(e)}>
+                <label>
+                  Team Name:
+                  <input type="text" name="team-name" id='team_name'/>
+                </label>
+                <input type="submit" value="Submit" />
+              </form>
+            </RuxTabPanel>
+          </RuxTabPanels>
+        </div>
+      : 
+      null
   )
 }
 export default Teams;

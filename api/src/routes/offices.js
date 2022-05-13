@@ -324,6 +324,8 @@ router.post('/:office_id/events/:event_id/teams', checkIfAuthorized, async (req,
 {
   Headers: Token -- only when using authentication
   Body:{
+    first_name,
+    last_name,
     email: <mandatory>,
     role: <mandatory>,
     is_admin,
@@ -333,7 +335,7 @@ router.post('/:office_id/events/:event_id/teams', checkIfAuthorized, async (req,
 */
 router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAuthorized, async (req, res) =>{
   const { office_id, event_id, team_id } = req.params;
-  const { email, role, is_admin, is_editor } = req.body;
+  const { email, role, is_admin, is_editor, first_name, last_name } = req.body;
 
   if(email != undefined || role != undefined || is_admin != undefined || is_editor != undefined){
 
@@ -348,8 +350,8 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
         const newUser = {
           id: null,
           email: email,
-          first_name: null,
-          last_name: null,
+          first_name: first_name,
+          last_name: last_name,
           is_admin: Boolean(is_admin),
           is_editor: Boolean(is_editor),
           office_id: office_id,
