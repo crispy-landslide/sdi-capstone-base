@@ -29,7 +29,9 @@ router.post('/', async (req, res) => {
         .where({email: token.email})
         .update({id: token.sub, first_name: token.given_name, last_name: token.family_name}, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          res.sendStatus(500)
+        })
     } else if(existingUser.length !== 0 && existingUser[0].id !== null) {
       res.sendStatus(401)
     } else{
@@ -45,8 +47,13 @@ router.post('/', async (req, res) => {
       }
       knex('users')
         .insert(newUser, ['*'])
-        .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .then(data => {
+          console.log('inserted')
+          res.status(201).send(data[0])
+        })
+        .catch(() => {
+          res.sendStatus(500)
+        })
     }
   } else {
     const { email, first_name, last_name, office_id } = req.body
@@ -56,7 +63,9 @@ router.post('/', async (req, res) => {
         .where({email: email})
         .update({office_id: office_id}, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          res.sendStatus(500)
+        })
     } else {
       newUser = {
         id: null,
@@ -65,13 +74,15 @@ router.post('/', async (req, res) => {
         last_name: last_name,
         is_admin: false,
         is_editor: false,
-        office_id: office_id,
-        is_deleted: false
+        is_deleted: false,
+        office_id: office_id
       }
       knex('users')
         .insert(newUser, ['*'])
         .then(data => res.status(201).json(data[0]))
-        .catch(() => res.sendStatus(500))
+        .catch(() => {
+          res.sendStatus(500)
+        })
     }
   }
 });
