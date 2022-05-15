@@ -62,8 +62,9 @@ router.post('/', async (req, res) => {
       .catch(() => res.sendStatus(500))
 
     if(createdOffice) {
+      console.log(createdOffice[0].id)
       await knex('users_offices')
-        .insert({email: token.email, office_id: createdOffice.office_id, is_admin: true}, ['*'])
+        .insert({user_email: token.email, office_id: createdOffice[0].id, is_admin: true, is_editor: false, is_deleted: false}, ['*'])
         .then(data => res.status(201).json(createdOffice[0]))
         .catch(() => res.sendStatus(500))
       // let updatedUser = await knex('users')

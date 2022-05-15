@@ -1,5 +1,5 @@
 const { faker } = require('@faker-js/faker');
-const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
+const { getRandomBool } = require('../../utils/seedUtils.js');
 // const fs = require('fs');
 // const path = require("path");
 
@@ -15,8 +15,7 @@ const generateUsers = () =>{
       id: i,
       first_name: firstName,
       last_name: lastName,
-      is_deleted: getRandomBool(),
-      office_id: getRandomNumber(1, 51)
+      is_deleted: getRandomBool()
     });
   }
 

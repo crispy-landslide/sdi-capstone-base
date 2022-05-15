@@ -39,11 +39,7 @@ router.post('/', async (req, res) => {
         id: token.sub,
         email: token.email,
         first_name: token.given_name,
-        last_name: token.family_name,
-        is_admin: false,
-        is_editor: false,
-        office_id: null,
-        is_deleted: false
+        last_name: token.family_name
       }
       knex('users')
         .insert(newUser, ['*'])
@@ -55,34 +51,31 @@ router.post('/', async (req, res) => {
           res.sendStatus(500)
         })
     }
-  } else {
-    const { email, first_name, last_name, office_id } = req.body
-    existingUser = await knex.select('*').from('users').where({email: email})
-    if(existingUser.length !== 0){
-      knex('users')
-        .where({email: email})
-        .update({office_id: office_id}, ['*'])
-        .then(data => res.status(201).json(data[0]))
-        .catch(() => {
-          res.sendStatus(500)
-        })
-    } else {
-      newUser = {
-        id: null,
-        email: email,
-        first_name: first_name,
-        last_name: last_name,
-        is_admin: false,
-        is_editor: false,
-        is_deleted: false,
-      }
-      knex('users')
-        .insert(newUser, ['*'])
-        .then(data => res.status(201).json(data[0]))
-        .catch(() => {
-          res.sendStatus(500)
-        })
-    }
+  // } else {
+  //   const { email, first_name, last_name, office_id } = req.body
+  //   existingUser = await knex.select('*').from('users').where({email: email})
+  //   if(existingUser.length !== 0){
+  //     knex('users')
+  //       .where({email: email})
+  //       .update({office_id: office_id}, ['*'])
+  //       .then(data => res.status(201).json(data[0]))
+  //       .catch(() => {
+  //         res.sendStatus(500)
+  //       })
+  //   } else {
+  //     newUser = {
+  //       id: null,
+  //       email: email,
+  //       first_name: first_name,
+  //       last_name: last_name
+  //     }
+  //     knex('users')
+  //       .insert(newUser, ['*'])
+  //       .then(data => res.status(201).json(data[0]))
+  //       .catch(() => {
+  //         res.sendStatus(500)
+  //       })
+  //   }
   }
 });
 
@@ -165,7 +158,7 @@ router.delete('/my-account', async (req, res) =>{
       await knex('users').where({email: user_email}).update({is_deleted: true}, ['*'])
         .then(data => res.status(200).json(data))
         .catch(() => res.sendStatus(500))
-    }
+
       await knex('users_offices').where({email: user_email}).update({is_deleted: true}, ['*'])
         .then(data => res.status(200).json(data))
         .catch(() => res.sendStatus(500))
