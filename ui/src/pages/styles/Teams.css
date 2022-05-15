@@ -42,6 +42,13 @@
   flex-direction: column;
   width: 100%;
 }
+.team-formContainer-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
 
 .formContainer{
   display: flex;
@@ -51,6 +58,18 @@
   background-color: #001828;
   width: 500px;
   height: 420px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.team-formContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #001828;
+  /* width: 500px; */
+  height: 220px;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -79,6 +98,14 @@
  display: flex;
  flex-direction: row;
  justify-content: space-between;
+ align-items: center;
+ width: 100%;
+ position: relative;
+}
+.team-formHeader {
+ display: flex;
+ flex-direction: row;
+ justify-content: center;
  align-items: center;
  width: 100%;
  position: relative;

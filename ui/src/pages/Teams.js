@@ -186,14 +186,22 @@ const Teams = () => {
             </RuxTabPanel>
             )}
             <RuxTabPanel aria-labelledby="tab-add-team" key="tab-add-team">
-              <h2>Create a new team!</h2>
-              <form onSubmit={e => submitNewTeam(e)}>
-                <label>
-                  Team Name:
-                  <input type="text" name="team-name" id='team_name'/>
-                </label>
-                <input type="submit" value="Submit" />
-              </form>
+             
+              <div className='team-formContainer-wrapper'>
+                <div className='team-formContainer'>
+                  <div className='team-formHeader'>
+                    <h2>Create a new team!</h2>
+                    <div></div>
+                  </div>
+                    <form className='form' onSubmit={e => submitNewTeam(e)}>
+                      <label>
+                        Team Name:
+                        <input className='inputs' type="text" name="team-name" id='team_name'/>
+                      </label>
+                      <input className='inputs' type="submit" value="Submit" />
+                    </form>
+                </div>
+              </div>
             </RuxTabPanel>
           </RuxTabPanels>
         </div>
