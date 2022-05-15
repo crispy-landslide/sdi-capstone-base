@@ -8,7 +8,7 @@
     "start:dev": "export NODE_ENV=development && knex migrate:latest && knex seed:run && nodemon --watch ./ ./src/index.js",
     "test": "jest",
     "lint": "eslint ./src/**/*.js ./db/**/*.js ./*.js",
-    "database": "docker exec -it trojn_capstone-db_1 bash"
+    "database": "docker exec -it capstone-db bash"
   },
   "author": "Jeff Haddock and Eric Sung",
   "license": "ISC",

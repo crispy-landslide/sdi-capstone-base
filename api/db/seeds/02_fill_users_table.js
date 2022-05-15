@@ -15,8 +15,6 @@ const generateUsers = () =>{
       id: i,
       first_name: firstName,
       last_name: lastName,
-      is_admin: getRandomBool(),
-      is_editor: getRandomBool(),
       is_deleted: getRandomBool(),
       office_id: getRandomNumber(1, 51)
     });

@@ -61,15 +61,19 @@ router.post('/', async (req, res) => {
       .then(data => data)
       .catch(() => res.sendStatus(500))
 
-    if (createdOffice) {
-      let updatedUser = await knex('users')
-        .where({email: token.email})
-        .update({office_id: createdOffice[0].id, is_admin: true})
-        .returning('*')
+    if(createdOffice) {
+      await knex('users_offices')
+        .insert({email: token.email, office_id: createdOffice.office_id, is_admin: true}, ['*'])
+        .then(data => res.status(201).json(createdOffice[0]))
         .catch(() => res.sendStatus(500))
-      if (updatedUser) {
-        res.status(201).json(createdOffice[0])
-      }
+      // let updatedUser = await knex('users')
+      //   .where({email: token.email})
+      //   .update({office_id: createdOffice[0].id, is_admin: true})
+      //   .returning('*')
+      //   .catch(() => res.sendStatus(500))
+      // if (updatedUser) {
+      //   res.status(201).json(createdOffice[0])
+      // }
     } else {
       res.sendStatus(500)
     }
@@ -357,9 +361,13 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           email: email,
           first_name: first_name,
           last_name: last_name,
+          is_deleted: false
+        }
+        const joinUser = {
+          user_email: email,
+          office_id: office_id,
           is_admin: Boolean(is_admin),
           is_editor: Boolean(is_editor),
-          office_id: office_id,
           is_deleted: false
         }
         await knex('users')
@@ -368,10 +376,16 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
             console.log(err)
             res.sendStatus(500)
           })
+        await knex('users_offices')
+          .insert(joinUser, ['*'])
+          .catch((err) => {
+            console.log(err)
+            res.sendStatus(500)
+          })
         }
 
       let existingKey = await knex('users_teams').select('*').where({user_email: email, team_id: team_id})
-      if(existingKey.length !== 0 ){
+      if(existingKey.length !== 0){
         await knex('users_teams')
           .where({user_email: email, team_id: team_id})
           .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
@@ -837,7 +851,7 @@ router.patch('/:office_id/events/:event_id/teams/:team_id/edit-user', checkIfAut
     res.status(400).send('Office ID not found in event')
   } else{
     if(Object.keys(req.body).length !== 0){
-      await knex('users').where({email: email, office_id: office_id}).update({is_admin: is_admin, is_editor: is_editor})
+      await knex('users_offices').where({user_email: email, office_id: office_id}).update({is_admin: is_admin, is_editor: is_editor})
         .catch(() => res.sendStatus(500))
       await knex('users_teams').where({user_email: email, team_id: team_id}).update({role: role}, ['*'])
         .then(data => res.status(201).json(data))
@@ -859,7 +873,7 @@ router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
 
   knex('offices').where({id: office_id}).update({is_deleted: true}, ['*'])
     .then(async data => {
-      await knex('users').where({office_id: office_id, is_deleted: false}).update({office_id: null})
+      await knex('users_offices').where({office_id: office_id, is_deleted: false}).update({is_deleted: false})
       .catch(() => res.sendStatus(500))
 
       const eventIds = await knex('events').where({office_id: office_id, is_deleted: false}).update({is_deleted: true}, ['id'])
@@ -867,6 +881,8 @@ router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
 
       const teamIds = await eventIds.forEach(async eventId => {
         await knex('tasks').where({event_id: eventId, is_deleted: false}).update({is_deleted: true})
+        await knex('attacks').where({event_id: eventId, is_deleted: false}).update({is_deleted: true})
+        await knex('missions').where({event_id: eventId, is_deleted: false}).update({is_deleted: true})
         return await knex('teams').where({event_id: eventId, is_deleted: false}).update({is_deleted: true}, ['id'])
       })
 

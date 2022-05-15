@@ -8,8 +8,6 @@
     table.text('id').nullable();
     table.text('first_name').nullable();
     table.text('last_name').nullable();
-    table.boolean('is_admin');
-    table.boolean('is_editor');
     table.boolean('is_deleted');
     table.integer('office_id').nullable();
     table.foreign('office_id').references('offices.id');

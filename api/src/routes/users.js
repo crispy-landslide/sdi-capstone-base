@@ -75,7 +75,6 @@ router.post('/', async (req, res) => {
         is_admin: false,
         is_editor: false,
         is_deleted: false,
-        office_id: office_id
       }
       knex('users')
         .insert(newUser, ['*'])
@@ -151,7 +150,7 @@ router.patch('/:user_email', async (req, res) =>{
   }
 })
 
-router.delete('/:user_email', async (req, res) =>{
+router.delete('/my-account', async (req, res) =>{
   const { user_email } = req.params;
   const existingUser = await knex.select('*').from('users').where({email: user_email}).then(data => data[0]).catch(() => res.sendStatus(500))
 
@@ -163,7 +162,11 @@ router.delete('/:user_email', async (req, res) =>{
 
     if(reqUserInfo.office_id === existingUser.office_id && reqUserInfo.is_admin){
 
-      knex('users').where({email: user_email}).update({is_deleted: true}, ['*'])
+      await knex('users').where({email: user_email}).update({is_deleted: true}, ['*'])
+        .then(data => res.status(200).json(data))
+        .catch(() => res.sendStatus(500))
+    }
+      await knex('users_offices').where({email: user_email}).update({is_deleted: true}, ['*'])
         .then(data => res.status(200).json(data))
         .catch(() => res.sendStatus(500))
     }
