@@ -47,13 +47,25 @@ function App() {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-
-    let events = await fetch(`${serverURL}/api/offices/${user.office_id}/events`, request)
-            .then(response => response.json())
-            .then(data => data)
-            .catch(err => console.log(err))
-    events?.length > 0 && setEvents(events.filter(event => !event.is_deleted))
-    return events
+    let newEvents = []
+    // await user.offices.forEach(async officeId => console.log(officeId))
+    await user.offices.forEach(async officeId => await fetch(`${serverURL}/api/offices/${officeId}/events`, request)
+                                                        .then(response => response.json())
+                                                        .then(async data => {
+                                                          newEvents = [...newEvents, ...data]
+                                                          console.log("New Events:", newEvents.filter(event => !event.is_deleted))
+                                                          await setEvents(newEvents.filter(event => !event.is_deleted))
+                                                          // console.log(events)
+                                                        })
+                                                        .catch(err => console.log(err)))
+    // await user.offices.forEach(officeId => console.log(officeId))
+    // let events = await fetch(`${serverURL}/api/offices/${user.office_id}/events`, request)
+    //         .then(response => response.json())
+    //         .then(data => data)
+    //         .catch(err => console.log(err))
+    // console.log(events)
+    // events?.length > 0 && setEvents(events.filter(event => !event.is_deleted))
+    // return events
   }
 
   const fetchUserInfo = async () => {
@@ -125,6 +137,7 @@ function App() {
     }
   }, [keycloak.authenticated]);
 
+
   return (
     <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions} onEvent={eventHandler}>
       <div className='app'>
@@ -132,7 +145,7 @@ function App() {
           <Header />
           <div className='main-page' id='main-page'>
             <Routes>
-              {user ? <Route path='/' element={user.office_id ? <Welcome /> : <AddOffice />} /> : ''
+              {user ? <Route path='/' element={user.offices.length > 0 ? <Welcome /> : <AddOffice />} /> : ''
               }
               <Route path='/events/:id' element={<Event />} />
               <Route path='/events/:id/teams' element={<Teams />} />

@@ -52,31 +52,6 @@ router.post('/', async (req, res) => {
           res.sendStatus(500)
         })
     }
-  // } else {
-  //   const { email, first_name, last_name, office_id } = req.body
-  //   existingUser = await knex.select('*').from('users').where({email: email})
-  //   if(existingUser.length !== 0){
-  //     knex('users')
-  //       .where({email: email})
-  //       .update({office_id: office_id}, ['*'])
-  //       .then(data => res.status(201).json(data[0]))
-  //       .catch(() => {
-  //         res.sendStatus(500)
-  //       })
-  //   } else {
-  //     newUser = {
-  //       id: null,
-  //       email: email,
-  //       first_name: first_name,
-  //       last_name: last_name
-  //     }
-  //     knex('users')
-  //       .insert(newUser, ['*'])
-  //       .then(data => res.status(201).json(data[0]))
-  //       .catch(() => {
-  //         res.sendStatus(500)
-  //       })
-  //   }
   }
 });
 

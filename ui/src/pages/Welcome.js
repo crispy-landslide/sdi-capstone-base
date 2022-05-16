@@ -36,6 +36,7 @@ const Welcome = () => {
       }
       <div className='welcome'>
         <EventCard event={{name: '+'}} add='add'/>
+        {/* {console.log(state.events)} */}
         {state.events && filteredEvents ? filteredEvents.map(event => <EventCard key={event.id} event={event}/>) : ''}
       </div>
     </div>

@@ -8,8 +8,9 @@ const router = express.Router();
 
 const checkIfAuthorized = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
-  if (reqUser.office_id != req.params.office_id || !reqUser.is_admin) {
+  let reqUser = await knex('users_offices').select('*').where({user_email: token.email}).then(data => data).catch(err => console.log(err))
+  reqUser = reqUser.filter(user => user.office_id == req.params.office_id)
+  if (!reqUser.length > 0 || !reqUser[0].is_admin) {
     return res.sendStatus(401)
   } else {
     next()
@@ -18,8 +19,9 @@ const checkIfAuthorized = async (req, res, next) => {
 
 const checkIfEditor = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
-  if (reqUser.office_id != req.params.office_id || (!reqUser.is_editor && !reqUser.is_admin)) {
+  let reqUser = await knex('users_offices').select('*').where({user_email: token.email}).then(data => data).catch(err => console.log(err))
+  reqUser = reqUser.filter(user => user.office_id == req.params.office_id)
+  if (!reqUser.length > 0 || (!reqUser[0].is_editor && !reqUser[0].is_admin)) {
     return res.sendStatus(401)
   } else {
     next()
@@ -28,8 +30,9 @@ const checkIfEditor = async (req, res, next) => {
 
 const checkIfBelongsToOffice = async (req, res, next) => {
   const token = req.kauth.grant.access_token.content;
-  const reqUser = await knex('users').select('*').where({email: token.email}).then(data => data[0]).catch(err => console.log(err))
-  if (reqUser.office_id != req.params.office_id) {
+  let reqUser = await knex('users_offices').select('*').where({user_email: token.email}).then(data => data).catch(err => console.log(err))
+  reqUser = reqUser.filter(user => user.office_id == req.params.office_id)
+  if (!reqUser.length > 0) {
     return res.sendStatus(401)
   } else {
     next()
@@ -66,14 +69,6 @@ router.post('/', async (req, res) => {
         .insert({user_email: token.email, office_id: createdOffice[0].id, is_admin: true, is_editor: false, is_deleted: false}, ['*'])
         .then(data => res.status(201).json(createdOffice[0]))
         .catch(() => res.sendStatus(500))
-      // let updatedUser = await knex('users')
-      //   .where({email: token.email})
-      //   .update({office_id: createdOffice[0].id, is_admin: true})
-      //   .returning('*')
-      //   .catch(() => res.sendStatus(500))
-      // if (updatedUser) {
-      //   res.status(201).json(createdOffice[0])
-      // }
     } else {
       res.sendStatus(500)
     }
@@ -81,6 +76,49 @@ router.post('/', async (req, res) => {
     res.status(400).send('Request body not complete. Request body should look like: \
     { \
       "name": <text - not nullable> \
+    }')
+  }
+})
+
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    email,
+    is_admin,
+    is_editor
+  }
+}
+*/
+router.post('/:office_id/add-user', checkIfAuthorized, async (req, res) =>{
+
+  const { office_id } = req.params;
+  const { email, is_admin, is_editor } = req.body;
+
+  if(email != undefined){
+    let existingUser = await knex('users').select('*').where({email: email})
+    existingUser = existingUser[0]
+
+    const newJoinRecord = {
+      user_email: existingUser.email,
+      office_id: office_id,
+      is_admin: is_admin,
+      is_editor: is_editor,
+      is_deleted: false
+    }
+
+    await knex('user_offices')
+    .insert(newJoinRecord, ['*'])
+    .then(data => res.status(201).json(data))
+    .catch(() => res.sendStatus(500))
+  } else{
+    res.status(400).send('Request body not complete. Request body should look like: \
+    { \
+      "start_date": <dateTime of start - not nullable>, \
+      "end_date": <dateTime of end - not nullable>, \
+      "name": <text - not nullable>, \
+      "tags": <text - nullable>, \
+      "description": <text - nullable> \
     }')
   }
 })
@@ -894,6 +932,35 @@ router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
     })
     .then(data => res.status(200).json(data))
     .catch(() => res.sendStatus(500))
+})
+
+/*
+{
+  Headers: Token -- only when using authentication
+  Body:{
+    email,
+    is_admin,
+    is_editor
+  }
+}
+*/
+router.delete('/:office_id/remove-user', checkIfAuthorized, async (req, res) =>{
+
+  const { office_id } = req.params;
+  const { email } = req.body;
+
+  if(email != undefined){
+    await knex('users_offices')
+    .where({user_email: email, office_id: office_id, is_deleted: false})
+    .update({is_deleted: true}, ['*'])
+      .then(data => res.status(200).json(data))
+      .catch(() => res.sendStatus(500))
+  } else{
+    res.status(400).send('Request body not complete. Request body should look like: \
+    { \
+      "email": <text - not nullable>, \
+    }')
+  }
 })
 
 router.delete('/:office_id/events/:event_id', checkIfAuthorized, async (req, res) =>{
