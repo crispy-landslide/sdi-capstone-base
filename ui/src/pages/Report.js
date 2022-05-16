@@ -35,7 +35,7 @@ const Report = () => {
       }
     }
 
-    let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks`, request)
+    let attacks = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -58,7 +58,7 @@ const Report = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    let missions = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions`, request)
+    let missions = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))

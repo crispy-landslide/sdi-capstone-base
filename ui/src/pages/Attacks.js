@@ -42,7 +42,7 @@ const Attacks = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    let missions = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions`, request)
+    let missions = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -60,7 +60,7 @@ const Attacks = () => {
       }
     }
 
-    let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks`, request)
+    let attacks = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -102,12 +102,12 @@ const Attacks = () => {
         }
       }
       filterAndSortAttacks(state.attacks, mission).forEach(async attack => {
-        let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks/${attack.id}`, request)
+        let attacks = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks/${attack.id}`, request)
           .then(response => response.json())
           .then(data => data)
           .catch(err => console.log(err))
       })
-      let returnedMission = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions/${mission.id}`, request)
+      let returnedMission = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions/${mission.id}`, request)
         .then(response => response.json())
         .then(data => data)
         .catch(err => console.log(err))
@@ -130,7 +130,7 @@ const Attacks = () => {
       },
       body: JSON.stringify(newMission)
     }
-    let deletedMission = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions/${mission.id}`, request)
+    let deletedMission = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions/${mission.id}`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -154,7 +154,7 @@ const Attacks = () => {
       },
       body: JSON.stringify(newMission)
     }
-    let addedMission = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions/`, request)
+    let addedMission = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions/`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))

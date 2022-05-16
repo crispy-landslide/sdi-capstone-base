@@ -11,7 +11,7 @@ const RiskBlock = ({ row, column, attacks}) => {
   const clickHandler = (attack, matchingMission) => {
     state.setCurrentAttack(attack)
     state.setCurrentMission(matchingMission)
-    navigate(`/events/${state.currentEvent.id}/attacks#attack-id-${attack.id}`)
+    navigate(`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks#attack-id-${attack.id}`)
   }
 
   useEffect(() => {

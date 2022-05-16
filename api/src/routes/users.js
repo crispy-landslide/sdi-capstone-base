@@ -72,15 +72,14 @@ router.get('/my-account', async (req, res) =>{
   // .then(data => data)
   .catch(() => res.sendStatus(500))
 
-  const userOffices = await knex.select('office_id').from('users_offices').where({user_email: token.email})
-  // .then(data => data.json())
+  const userOffices = await knex.from('offices').innerJoin('users_offices', 'offices.id', 'users_offices.office_id').where({user_email: token.email})
+  // const userOffices = await knex.select('office_id').from('users_offices').where({user_email: token.email})
+  // .then(data => data)
   .catch(() => res.sendStatus(500))
-
-  console.log(userOffices)
 
   const combinedUserInfo = {
     ...userInfo[0],
-    offices: userOffices.map(office => office.office_id)
+    offices: userOffices
   }
   if(combinedUserInfo){
     res.status(201).send(combinedUserInfo)

@@ -5,7 +5,7 @@ const { getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateUsers = () =>{
   const userList = [];
-  for(let i = 0; i < 1000; i++){
+  for(let i = 0; i < 100; i++){
     let firstName = faker.name.firstName();
     let lastName = faker.name.lastName();
     let email = faker.internet.email(firstName + i, lastName);

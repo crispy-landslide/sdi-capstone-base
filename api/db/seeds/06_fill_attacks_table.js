@@ -21,15 +21,15 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
       attackList.push({
         mission_id: missions[Math.floor(Math.random() * missions.length)].id,
-        attack: getRandomNumber(1, 11),
-        variant: getRandomNumber(1, 11),
+        attack: i,
+        variant: i,
         description: faker.lorem.sentences(),
         goal: faker.lorem.sentences(),
         assumptions: faker.lorem.sentences(),
         mission_impact: faker.lorem.sentences(),
-        mission_impact_score: getRandomNumber(1, 5),
+        mission_impact_score: getRandomNumber(1, 6),
         likelihood: faker.lorem.word(),
-        likelihood_score: getRandomNumber(1, 5),
+        likelihood_score: getRandomNumber(1, 6),
         event_id: event.id,
         is_deleted: getRandomBool()
       });

@@ -3,13 +3,13 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateEvents = () =>{
   const eventList = [];
-  for(let i = 0; i < 25; i++){
+  for(let i = 0; i < 100; i++){
     let startDate;
     let endDate;
-    if(i < 334){
+    if(i < 33){
       startDate = faker.date.past();
       endDate = faker.date.past();
-    } else if(333 < i < 667) {
+    } else if(33 <= i <= 66) {
       startDate = faker.date.past();
       endDate = faker.date.soon();
     } else {
@@ -22,7 +22,7 @@ const generateEvents = () =>{
       end_date: endDate,
       name: faker.lorem.word(),
       report_path: null,
-      office_id: getRandomNumber(1, 51),
+      office_id: getRandomNumber(1, 11),
       tags: null,
       is_deleted: getRandomBool(),
       description: faker.lorem.sentences()

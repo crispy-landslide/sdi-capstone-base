@@ -5,8 +5,8 @@ import keycloak from '../keycloak'
 import '../pages/styles/Teams.css'
 
 const AddParticipant = ({team, refresh, setAddingUser, setEditUser}) => {
-  const { user, currentEvent } = useContext(StateContext)
-  
+  const state = useContext(StateContext)
+
   const submitNewParticipant = (event, teamId) => {
     event.preventDefault()
 
@@ -42,7 +42,7 @@ const AddParticipant = ({team, refresh, setAddingUser, setEditUser}) => {
       body: JSON.stringify(addNewParticipant)
     }
 
-    fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${teamId}/add-user`, request)
+    fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${teamId}/add-user`, request)
     .then(response => response.json())
     .then(data => refresh())
     .catch(err => console.log(err))

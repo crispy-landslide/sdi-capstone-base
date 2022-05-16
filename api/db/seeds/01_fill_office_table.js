@@ -3,7 +3,7 @@ const { getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateCompanies = () =>{
   const companyList = [];
-  for(let i = 0; i < 50; i++){
+  for(let i = 1; i <= 10; i++){
     companyList.push({name: faker.company.companyName(), is_deleted: getRandomBool()});
   }
 
@@ -12,7 +12,7 @@ const generateCompanies = () =>{
 
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
 exports.seed = async function(knex) {
 

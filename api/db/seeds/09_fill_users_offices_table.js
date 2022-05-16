@@ -1,17 +1,19 @@
-const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
+const { getRandomBool } = require('../../utils/seedUtils.js');
 
 const fillOffices = (users) =>{
   const officeList = [];
-  for(let i = 0; i < users.length; i++){
-    officeList.push({
-      user_email: users[i],
-      office_id: getRandomNumber(1, 51),
-      is_admin: getRandomBool(),
-      is_editor: getRandomBool(),
-      is_deleted: getRandomBool()
-    });
+  for (let j = 0; j < 10; j++) {
+    for(let i = 0; i < users.length; i++){
+      officeList.push({
+        user_email: users[i],
+        office_id: i % 10 + 1,
+        is_admin: getRandomBool(),
+        is_editor: getRandomBool(),
+        is_deleted: getRandomBool()
+      });
+    }
+    users.shift()
   }
-
   return officeList;
 }
 

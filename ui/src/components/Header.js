@@ -30,7 +30,7 @@ const Header = () => {
   const goToEvent = () => {
     setShowSidebar(false)
     closeNav()
-    navigate(`/events/${state.currentEvent.id}`)
+    navigate(`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`)
   }
 
 

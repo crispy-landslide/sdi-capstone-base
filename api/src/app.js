@@ -5,6 +5,25 @@ const initKeycloak = require('./keycloak-config.js')
 const users = require('./routes/users.js')
 const offices = require('./routes/offices.js')
 
+// if (process.env.NODE_ENV === 'development') {
+//   const knex = require('knex')(require('../knexfile.js')[process.env.NODE_ENV || 'development']);
+
+//   (async () => {
+//       try {
+//         console.log("Rolling back database . . . ")
+//         await knex.migrate.rollback()
+//         console.log("Migrating database to latest. . . ")
+//         await knex.migrate.latest()
+//         console.log("Running database seeds . . . ")
+//         await knex.seed.run()
+//         console.log("Finished database setup.")
+//       } catch (err) {
+//         console.log(err)
+//       }
+//   })();
+// }
+
+
 const app = express();
 app.use(cors());
 app.use(morgan('dev'));

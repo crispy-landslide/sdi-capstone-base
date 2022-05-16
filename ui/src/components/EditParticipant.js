@@ -6,13 +6,15 @@ import '../pages/styles/Teams.css'
 import { RuxButton } from '@astrouxds/react'
 
 const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
-  const { currentEvent } = useContext(StateContext)
+  const state = useContext(StateContext)
 
   const patchParticipant = (event, user) => {
     event.preventDefault()
 
     let is_admin;
     let is_editor;
+
+    console.log(event.target.permission_select.value)
 
     if(event.target.permission_select.value === "editor"){
       is_admin = false;
@@ -32,6 +34,8 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
       is_editor: is_editor
     }
 
+    console.log(editedParticipant)
+
     let request = {
       method: 'PATCH',
       headers: {
@@ -41,7 +45,7 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
       body: JSON.stringify(editedParticipant)
     }
 
-    fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${user.team_id}/edit-user`, request)
+    fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/edit-user`, request)
     .then(response => response.json())
     .then(data => refresh())
     .catch(err => console.log(err))
@@ -64,14 +68,14 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
         body: JSON.stringify(editedParticipant)
       }
 
-      fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${user.team_id}/remove-user`, request)
+      fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/remove-user`, request)
       .then(response => response.json())
       .then(data => refresh())
       .catch(err => console.log(err))
     }
   }
 
-  return( 
+  return(
       <div className='formContainer-wrapper'>
         <div className='formContainer'>
           <div className='formHeader'>
@@ -84,15 +88,15 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
             <p>Last Name: {user.last_name ?? 'N/A'}</p>
             <label>
               Role:
-              <div className='inputs'> <input type="text" name="role" id='role' required /> </div>
+              <div className='inputs'> <input type="text" name="role" id='role' required defaultValue={user.role} /> </div>
             </label>
             <p>Email: {user.email}</p>
             <label className="permission-title" htmlFor="permission_select">Permission Level:</label>
             <div className='inputs'>
               <select name="permissions" id="permission_select">
-                  <option value="participant">Participant</option>
-                  <option value="editor">Editor</option>
-                  <option value="admin">Admin</option>
+                  <option value="participant" selected={!user.is_editor && !user.is_admin}>Participant</option>
+                  <option value="editor" selected={user.is_editor && !user.is_admin}>Editor</option>
+                  <option value="admin" selected={user.is_admin}>Admin</option>
               </select>
             </div>
             <div className='buttons'>

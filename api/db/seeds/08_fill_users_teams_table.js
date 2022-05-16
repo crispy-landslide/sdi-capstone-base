@@ -1,16 +1,22 @@
 const { faker } = require('@faker-js/faker');
-const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
+const { getRandomBool } = require('../../utils/seedUtils.js');
 
 const fillTeams = (users) =>{
   const teamList = [];
-  for(let i = 0; i < users.length; i++){
-    teamList.push({
-      user_email: users[i],
-      team_id: getRandomNumber(1, 300),
-      role: faker.lorem.word(),
-      is_deleted: getRandomBool()
-    });
+  for (let k = 0; k < 10; k++) {
+    for (let i = 0; i < 10; i++) {
+      for(let j = 0; j < users.length; j++){
+        teamList.push({
+          user_email: users[j],
+          team_id: i * users.length + j + 1,
+          role: faker.lorem.word(),
+          is_deleted: getRandomBool()
+        });
+      }
+    }
+    users.shift()
   }
+
 
   return teamList;
 }

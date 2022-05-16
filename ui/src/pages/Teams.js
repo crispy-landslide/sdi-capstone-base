@@ -9,13 +9,13 @@ import './styles/Teams.css'
 import keycloak from '../keycloak'
 
 const Teams = () => {
-  const { user, teams, setTeams, currentEvent, users, setUsers, serverURL, fetchEvents, fetchUserInfo } = useContext(StateContext)
+  const { user, teams, setTeams, currentEvent, users, setUsers, serverURL, fetchEvents, fetchUserInfo, currentOffice } = useContext(StateContext)
   const [addingUser, setAddingUser] = useState(false)
   const [editUser, setEditUser] = useState(null)
 
   useEffect(async () => {
     const teams = await getTeamsData()
-    await getUsersData(teams)    
+    await getUsersData(teams)
   }, [])
 
   const getTeamsData = async () => {
@@ -28,7 +28,7 @@ const Teams = () => {
       }
     }
     // below grabs all the teams for this particular event
-    let teams = await fetch(`${serverURL}/api/offices/${user.office_id}/events/${currentEvent.id}/teams`, request)
+    let teams = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
             .then(response => response.json())
             .then(data => {
               let filteredTeams = data.filter(team => team.is_deleted === false)
@@ -36,7 +36,7 @@ const Teams = () => {
               return filteredTeams
             })
             .catch(err => console.log(err))
-    
+
     return teams
   }
 
@@ -52,7 +52,7 @@ const Teams = () => {
 
     let newUsers = []
     await teams.forEach(async team => {
-      await fetch(`${serverURL}/api/offices/${user.office_id}/events/${currentEvent.id}/teams/${team.id}/users`, request)
+      await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams/${team.id}/users`, request)
             .then(response => response.json())
             .then(data => data.filter(users => users.is_deleted === false))
             .then(filteredUsers => {
@@ -98,12 +98,12 @@ const Teams = () => {
       body: JSON.stringify(addNewTeam)
     }
 
-    fetch(`http://localhost:3001/api/offices/${user.office_id}/events/${currentEvent.id}/teams`, request)
+    fetch(`http://localhost:3001/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
     .then(response => response.json())
     .then(data => refreshComponent())
     .catch(err => console.log(err))
   }
-  
+
   const closeComponents = (event) =>{
     event.preventDefault()
 
@@ -128,7 +128,7 @@ const Teams = () => {
   }
 
   return (
-      teams && users ? 
+      teams && users ?
         <div className='teams'>
           {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
 
@@ -138,18 +138,21 @@ const Teams = () => {
             <RuxTab id="tab-add-team"> + </RuxTab>
           </RuxTabs>
 
-          
+
           {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
           <RuxTabPanels aria-labelledby="tab-set-teams">
           {teams.map((team) =>
             <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>
-              <RuxButton size='medium' className='addParticipantButton' onClick={() => { 
-                if(user.is_admin){ 
-                  editUser != null ? setEditUser(null) : null;
-                  setAddingUser(true) 
-                  }}}>
-                Add participant
-              </RuxButton>
+                {currentOffice.is_admin ?
+                  <RuxButton size='medium' className='addParticipantButton' onClick={() => {
+                      editUser != null ? setEditUser(null) : null;
+                      setAddingUser(true)
+                    }}>
+                    Add participant
+                  </RuxButton>
+                  :
+                  null
+                }
               {renderSubComponents(team)}
               <RuxTable>
                   <RuxTableHeader>
@@ -159,7 +162,11 @@ const Teams = () => {
                       <RuxTableHeaderCell> Role </RuxTableHeaderCell>
                       <RuxTableHeaderCell> Email </RuxTableHeaderCell>
                       <RuxTableHeaderCell> Permissions </RuxTableHeaderCell>
-                      <RuxTableHeaderCell></RuxTableHeaderCell>
+                      {currentOffice.is_admin ?
+                        <RuxTableHeaderCell></RuxTableHeaderCell>
+                        :
+                        null
+                      }
                     </RuxTableHeaderRow>
                   </RuxTableHeader>
                     <RuxTableBody>
@@ -172,11 +179,15 @@ const Teams = () => {
                               <RuxTableCell> {currUser.role} </RuxTableCell>
                               <RuxTableCell> {currUser.email} </RuxTableCell>
                               <RuxTableCell> {determinePermissionLevel(currUser)} </RuxTableCell>
-                              <RuxTableCell> <img className='edit' src='/pencil-solid.svg' alt='edit' title='edit user' 
-                              onClick={() => { 
-                                addingUser ? setAddingUser(false) : null;
-                                setEditUser(currUser) 
-                                }}/> </RuxTableCell>
+                              {currentOffice.is_admin ?
+                                <RuxTableCell> <img className='edit' src='/pencil-solid.svg' alt='edit' title='edit user'
+                                  onClick={() => {
+                                    addingUser ? setAddingUser(false) : null;
+                                    setEditUser(currUser)
+                                    }}/> </RuxTableCell>
+                                :
+                                null
+                              }
                           </RuxTableRow>
                           )
                         }
@@ -197,7 +208,7 @@ const Teams = () => {
             </RuxTabPanel>
           </RuxTabPanels>
         </div>
-      : 
+      :
       null
   )
 }

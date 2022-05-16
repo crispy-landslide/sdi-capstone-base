@@ -18,7 +18,7 @@ const EventCard = ({ event, add }) => {
       tags: '',
       description: '',
       is_deleted: false,
-      office_id: state.user.office_id
+      office_id: state.currentOffice.id
     }
     const request = {
       method: 'POST',
@@ -28,7 +28,7 @@ const EventCard = ({ event, add }) => {
       },
       body: JSON.stringify(newEvent)
     }
-    let url = `${state.serverURL}/api/offices/${state.user.office_id}/events`
+    let url = `${state.serverURL}/api/offices/${state.currentOffice.id}/events`
 
     const returnEvent = await fetch(url, request)
       .then(response => response.json())
@@ -37,13 +37,13 @@ const EventCard = ({ event, add }) => {
 
     state.setCurrentEvent(returnEvent[0])
     await state.fetchEvents(state.user);
-    navigate(`/events/${returnEvent[0].id}/settings`)
+    navigate(`/offices/${state.currentOffice.id}/events/${returnEvent[0].id}/settings`)
   }
 
   const onClickEvent = () => {
     console.log(event)
     state.setCurrentEvent(event)
-    navigate(`/events/${event.id}`)
+    navigate(`/offices/${state.currentOffice.id}/events/${event.id}`)
   }
 
   const clickHandler = add ? onAdd : onClickEvent

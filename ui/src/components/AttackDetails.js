@@ -44,7 +44,7 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
           'Authorization': `Bearer ${keycloak.token}`
         }
       }
-      let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks/${attack.id}`, request)
+      let attacks = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks/${attack.id}`, request)
         .then(response => response.json())
         .then(data => data)
         .catch(err => console.log(err))
@@ -66,8 +66,8 @@ const AttackDetails = ({ attack, mission, fetchAttacks, addAttack, setAddAttack,
     }
 
     let url = addAttack ?
-    `${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks/` :
-    `${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks/${attack.id}`
+    `${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks/` :
+    `${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks/${attack.id}`
 
     let attacks = await fetch(url, request)
       .then(response => response.json())

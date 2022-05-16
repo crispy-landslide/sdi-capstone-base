@@ -13,8 +13,6 @@ const keycloakConfig = {
   "realmPublicKey": process.env.REALM_PUBLIC_KEY
 }
 
-console.log(keycloakConfig)
-
 const initKeycloak = () => {
   if (keycloak) {
     console.log("Return existing keycloak instance.");

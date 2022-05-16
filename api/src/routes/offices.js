@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
     if(createdOffice) {
       await knex('users_offices')
         .insert({user_email: token.email, office_id: createdOffice[0].id, is_admin: true, is_editor: false, is_deleted: false}, ['*'])
-        .then(data => res.status(201).json(createdOffice[0]))
+        .then(() => res.status(201).json(createdOffice[0]))
         .catch(() => res.sendStatus(500))
     } else {
       res.sendStatus(500)
@@ -438,7 +438,7 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
             is_deleted: false,
             team_id: team_id
           }
-    
+
           await knex('users_teams')
             .insert(newMember, ['*'])
             .then(data => res.status(201).json(data))
@@ -607,7 +607,15 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
   } else if(eventId != event_id){
     res.status(400).send('Event ID not found in team')
   } else{
-    await knex.from('users').innerJoin('users_teams', 'users.email', 'users_teams.user_email').where({team_id: team_id})
+    let usersInfo = await knex.from('users').innerJoin('users_offices', 'users.email', 'users_offices.user_email').where({office_id: office_id})
+
+    let usersTeams = await knex.from('users_teams').select('*').where({team_id: team_id})
+
+    // usersTeams.map(user => {
+
+    // })
+
+
     .then(users => res.status(200).send(users))
     .catch(err => {
       console.log(err)

@@ -3,10 +3,10 @@ const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
 const generateTeams = () =>{
   const teamsList = [];
-  for(let i = 0; i < 300; i++){
+  for(let i = 0; i < 1000; i++){
     teamsList.push({
       name: faker.lorem.word(),
-      event_id: getRandomNumber(1, 25),
+      event_id: getRandomNumber(1, 101),
       is_deleted: getRandomBool()
     });
   }
