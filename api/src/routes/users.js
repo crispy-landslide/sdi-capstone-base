@@ -39,7 +39,8 @@ router.post('/', async (req, res) => {
         id: token.sub,
         email: token.email,
         first_name: token.given_name,
-        last_name: token.family_name
+        last_name: token.family_name,
+        is_deleted: false
       }
       knex('users')
         .insert(newUser, ['*'])
@@ -89,12 +90,28 @@ router.post('/', async (req, res) => {
 //   .catch(() => res.sendStatus(500))
 // })
 
-router.get('/my-account', (req, res) =>{
+router.get('/my-account', async (req, res) =>{
   const token = req.kauth.grant.access_token.content;
 
-  knex.select('*').from('users').where({email: token.email})
-  .then(data => res.status(200).send(data[0]))
+  const userInfo = await knex.select('*').from('users').where({email: token.email})
+  // .then(data => data)
   .catch(() => res.sendStatus(500))
+
+  const userOffices = await knex.select('office_id').from('users_offices').where({user_email: token.email})
+  // .then(data => data.json())
+  .catch(() => res.sendStatus(500))
+
+  console.log(userOffices)
+
+  const combinedUserInfo = {
+    ...userInfo[0],
+    offices: userOffices.map(office => office.office_id)
+  }
+  if(combinedUserInfo){
+    res.status(201).send(combinedUserInfo)
+  } else{
+    res.sendStatus(500)
+  }
 })
 
 /*

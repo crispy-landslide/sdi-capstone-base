@@ -62,7 +62,6 @@ router.post('/', async (req, res) => {
       .catch(() => res.sendStatus(500))
 
     if(createdOffice) {
-      console.log(createdOffice[0].id)
       await knex('users_offices')
         .insert({user_email: token.email, office_id: createdOffice[0].id, is_admin: true, is_editor: false, is_deleted: false}, ['*'])
         .then(data => res.status(201).json(createdOffice[0]))
@@ -874,7 +873,7 @@ router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
 
   knex('offices').where({id: office_id}).update({is_deleted: true}, ['*'])
     .then(async data => {
-      await knex('users_offices').where({office_id: office_id, is_deleted: false}).update({is_deleted: false})
+      await knex('users_offices').where({office_id: office_id, is_deleted: false}).update({is_deleted: true})
       .catch(() => res.sendStatus(500))
 
       const eventIds = await knex('events').where({office_id: office_id, is_deleted: false}).update({is_deleted: true}, ['id'])
