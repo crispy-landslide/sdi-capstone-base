@@ -60,8 +60,7 @@ const Welcome = () => {
       }
       <div className='welcome'>
         <EventCard event={{name: '+'}} add='add'/>
-        {/* {console.log(state.events)} */}
-        {state.events && filteredEvents ? filteredEvents.filter(event => state.currentOffice.id === event.office_id).map(event => <EventCard key={event.id} event={event}/>) : ''}
+        {state.events && filteredEvents ? filteredEvents.filter(event => state.currentOffice.id === event.office_id && !event.is_deleted).map(event => <EventCard key={event.id} event={event}/>) : ''}
       </div>
     </div>
   )

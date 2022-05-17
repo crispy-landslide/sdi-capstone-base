@@ -46,6 +46,7 @@ const EventSettings = () => {
       console.log("Updated Event: ", returnEvent)
       console.log(`Submitted changes for event: ${state.currentEvent.name}`)
       await state.fetchEvents(state.user);
+      navigate(`/`)
     }
   }
 
