@@ -29,6 +29,7 @@ function App() {
   const [events, setEvents] = useState()
 
   const [users, setUsers] = useState()
+  const [currentOffice, setCurrentOffice] = useState()
   const [tasks, setTasks] = useState()
   const [attacks, setAttacks] = useState()
   const [teams, setTeams] = useState()
@@ -47,13 +48,16 @@ function App() {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-
-    let events = await fetch(`${serverURL}/api/offices/${user.office_id}/events`, request)
-            .then(response => response.json())
-            .then(data => data)
-            .catch(err => console.log(err))
-    events?.length > 0 && setEvents(events.filter(event => !event.is_deleted))
-    return events
+    let newEvents = []
+    // await user.offices.forEach(async officeId => console.log(officeId))
+    await user.offices.forEach(async office => await fetch(`${serverURL}/api/offices/${office.id}/events`, request)
+      .then(response => response.json())
+      .then(async data => {
+        newEvents = [...newEvents, ...data]
+        await setEvents(newEvents.filter(event => !event.is_deleted))
+        // console.log(events)
+      })
+      .catch(err => console.log(err)))
   }
 
   const fetchUserInfo = async () => {
@@ -66,14 +70,14 @@ function App() {
     }
 
     let user = await fetch(`${serverURL}/api/users/`, request)
-            .then(async response => {
-                if (response.status === 201) {
-                  return await response.json()
-                } else {
-                  console.log(response.status)
-                }
-            })
-            .catch(err => console.log(err))
+      .then(async response => {
+          if (response.status === 201) {
+            return await response.json()
+          } else {
+            console.log(response.status)
+          }
+      })
+      .catch(err => console.log(err))
 
     if (user === undefined) {
       user = await fetch(`${serverURL}/api/users/my-account`, {...request, method: 'GET'})
@@ -88,6 +92,7 @@ function App() {
   const stateContextValues = {
     events, setEvents,
     user, setUser,
+    currentOffice, setCurrentOffice,
     users, setUsers,
     tasks, setTasks,
     attacks, setAttacks,
@@ -106,24 +111,28 @@ function App() {
     }
     if (event === 'onAuthSuccess') {
       let user = await fetchUserInfo()
-      console.log(user)
+      user.offices && setCurrentOffice(user.offices[0])
       await fetchEvents(user)
     }
   }
 
-  const refresh = async (id) => {
+  const refresh = async (office_id, event_id) => {
     let user = await fetchUserInfo()
+    setCurrentOffice(user.offices.filter(office => office.id === office_id))
     let events = await fetchEvents(user)
-    setCurrentEvent(events.find(event => event.id === id))
+    setCurrentEvent(events?.find(event => event.id === event_id))
   }
 
   useEffect(() => {
     let path = window.location.pathname
-    let id = Number.parseInt(path.split('/')[2])
-    if (id && keycloak.authenticated) {
-      refresh(id)
+    let office_id = Number.parseInt(path.split('/')[2])
+    let event_id = Number.parseInt(path.split('/')[4])
+    console.log(event_id, office_id)
+    if (event_id && office_id && keycloak.authenticated) {
+      refresh(office_id, event_id)
     }
   }, [keycloak.authenticated]);
+
 
   return (
     <ReactKeycloakProvider authClient={keycloak} initOptions={initOptions} onEvent={eventHandler}>
@@ -132,14 +141,14 @@ function App() {
           <Header />
           <div className='main-page' id='main-page'>
             <Routes>
-              {user ? <Route path='/' element={user.office_id ? <Welcome /> : <AddOffice />} /> : ''
+              {user ? <Route path='/' element={user.offices?.length > 0 ? <Welcome /> : <AddOffice />} /> : ''
               }
-              <Route path='/events/:id' element={<Event />} />
-              <Route path='/events/:id/teams' element={<Teams />} />
-              <Route path='/events/:id/tasks' element={<Tasks />} />
-              <Route path='/events/:id/attacks' element={<Attacks />} />
-              <Route path='/events/:id/report' element={<Report />} />
-              <Route path='/events/:id/settings' element={<EventSettings />} />
+              <Route path='/offices/:office_id/events/:event_id' element={<Event />} />
+              <Route path='/offices/:office_id/events/:event_id/teams' element={<Teams />} />
+              {/* <Route path='/offices/:office_id/events/:event_id/tasks' element={<Tasks />} /> */}
+              <Route path='/offices/:office_id/events/:event_id/attacks' element={<Attacks />} />
+              <Route path='/offices/:office_id/events/:event_id/report' element={<Report />} />
+              <Route path='/offices/:office_id/events/:event_id/settings' element={<EventSettings />} />
             </Routes>
           </div>
 

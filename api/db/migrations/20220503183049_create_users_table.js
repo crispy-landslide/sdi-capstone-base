@@ -8,11 +8,7 @@
     table.text('id').nullable();
     table.text('first_name').nullable();
     table.text('last_name').nullable();
-    table.boolean('is_admin');
-    table.boolean('is_editor');
     table.boolean('is_deleted');
-    table.integer('office_id').nullable();
-    table.foreign('office_id').references('offices.id');
   })
 };
 
@@ -21,8 +17,5 @@
 * @returns { Promise<void> }
 */
 exports.down = function(knex) {
-  return knex.schema.alterTable('users', table => {
-    table.dropForeign('office_id');
-  })
-   .then(() => knex.schema.dropTableIfExists('users'))
+  return knex.schema.dropTableIfExists('users')
 };

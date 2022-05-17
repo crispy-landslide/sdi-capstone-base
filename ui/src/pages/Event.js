@@ -16,7 +16,7 @@ const Event = () => {
       }
     }
 
-    let teams = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/teams`, request)
+    let teams = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -35,7 +35,7 @@ const Event = () => {
     }
     let users = [];
     for (const team of teams) {
-      let team_users = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/teams/${team.id}/users`, request)
+      let team_users = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${team.id}/users`, request)
         .then(response => response.json())
         .then(data => data)
         .catch(err => console.log(err))
@@ -54,7 +54,7 @@ const Event = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    let missions = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/missions`, request)
+    let missions = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/missions`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -72,7 +72,7 @@ const Event = () => {
       }
     }
 
-    let attacks = await fetch(`${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}/attacks`, request)
+    let attacks = await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -115,8 +115,8 @@ const Event = () => {
               <div className='info-values'>
                 <div className='entry'>{(new Date(state.currentEvent.start_date)).toDateString() || <>&nbsp;</>}</div>
                 <div className='entry'>{(new Date(state.currentEvent.end_date)).toDateString() || <>&nbsp;</>}</div>
-                <div className='entry'>{state.attacks?.length || <>&nbsp;</>}</div>
-                <div className='entry'>{state.users?.length || <>&nbsp;</>}</div>
+                <div className='entry'>{state.attacks?.length || '0'}</div>
+                <div className='entry'>{state.users?.length || '0'}</div>
               </div>
             </div>
 

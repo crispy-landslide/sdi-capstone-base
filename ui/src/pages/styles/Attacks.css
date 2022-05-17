@@ -48,6 +48,11 @@
   margin-right: 5px;
 }
 
+.edit-mission-number:focus {
+  outline: none;
+  border: 3px solid #4dacff;
+}
+
 .edit-name {
   background-color: #182637;
   border: 3px solid #98bdd3;
@@ -55,7 +60,12 @@
   color: #cbdee9;
   padding: 10px;
   width: max(20vw - 100px);
-  margin-left: 20px;
+  margin-inline: 20px;
+}
+
+.edit-name:focus {
+  outline: none;
+  border: 3px solid #4dacff;
 }
 
 .center {

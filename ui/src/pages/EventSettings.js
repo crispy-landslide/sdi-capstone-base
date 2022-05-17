@@ -33,7 +33,7 @@ const EventSettings = () => {
         },
         body: JSON.stringify(updatedEvent)
       }
-      let url = `${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}`
+      let url = `${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`
 
       const returnEvent = await fetch(url, request)
         .then(response => response.json())
@@ -65,7 +65,7 @@ const EventSettings = () => {
           'Authorization': `Bearer ${keycloak.token}`
         }
       }
-      let url = `${state.serverURL}/api/offices/${state.user.office_id}/events/${state.currentEvent.id}`
+      let url = `${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`
 
       const returnEvent = await fetch(url, request)
         .then(response => response.json())

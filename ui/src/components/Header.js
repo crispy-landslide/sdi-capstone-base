@@ -30,7 +30,7 @@ const Header = () => {
   const goToEvent = () => {
     setShowSidebar(false)
     closeNav()
-    navigate(`/events/${state.currentEvent.id}`)
+    navigate(`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`)
   }
 
 
@@ -53,8 +53,10 @@ const Header = () => {
 
   const clickHandler = () => {
     if (keycloak.authenticated) {
+      navigate('/')
       keycloak.logout()
     } else {
+      navigate('/')
       keycloak.login()
     }
   }
