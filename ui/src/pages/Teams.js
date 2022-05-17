@@ -12,6 +12,7 @@ const Teams = () => {
   const { user, teams, setTeams, currentEvent, users, setUsers, serverURL, fetchEvents, fetchUserInfo, currentOffice } = useContext(StateContext)
   const [addingUser, setAddingUser] = useState(false)
   const [editUser, setEditUser] = useState(null)
+  const [editTeam, setEditTeam] = useState(false)
 
   useEffect(async () => {
     const teams = await getTeamsData()
@@ -128,6 +129,14 @@ const Teams = () => {
     }
   }
 
+  const deleteTeamHandler = (team) => {
+
+  }
+
+  const editTeamHandler = (e, team) => {
+
+  }
+
   return (
       teams && users ?
         <div className='teams'>
@@ -145,6 +154,22 @@ const Teams = () => {
           {teams.map((team) =>
             <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>
               <div className='panel'>
+              <h2>
+                {editTeam ?
+                  <>
+                    <form className='edit-team-name' onSubmit={(e) => editTeamHandler(e, team)}>
+                      <input className='edit-name' type='text' name='name' id='name' defaultValue={team.name}/>
+                      <input className='button' type='submit' value='Save changes'/>
+                      <img className='svg edit-team' src='/trash-solid.svg' alt='trash'  title='delete team' onClick={() => deleteTeamHandler(team)}/>
+                      <img className='svg edit-team' src='/x-solid.svg' alt='close'  title='cancel edit' onClick={() => setEditTeam(false)}/>
+                    </form>
+                  </> :
+                  <>
+                    {team.name}
+                    <img className='svg edit-team' src='/pencil-solid.svg' alt='edit'  title='edit team' onClick={() => setEditTeam(true)}/>
+                  </>
+                }
+              </h2>
                 {currentOffice.is_admin ?
                   <div className='button-container'>
                     <RuxButton size='medium' className='addParticipantButton' onClick={() => {
