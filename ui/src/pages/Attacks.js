@@ -78,7 +78,7 @@ const Attacks = () => {
   const refresh = async (currentMission) => {
     await state.setMissions(null)
     let user = state.user ?? await state.fetchUserInfo()
-    await state.fetchEvents(user)
+    let newEvents = await state.fetchEvents(user)
     let newMissions = await fetchMissions()
     let newAttacks = await fetchAttacks(newMissions)
     currentMission && state.setCurrentMission(currentMission)
@@ -87,10 +87,10 @@ const Attacks = () => {
   useEffect(() => {
     if (state.user === undefined) {
       state.setMissions(null)
-    } else {
-      keycloak.authenticated && state.currentEvent && refresh()
+    } else if (keycloak.authenticated && state.currentEvent && state.currentOffice) {
+       refresh()
     }
-  }, [state.user, keycloak.authenticated, state.currentEvent])
+  }, [state.user, keycloak.authenticated, state.currentEvent, state.currentOffice])
 
   const deleteMissionHandler = async (mission) => {
     if (window.confirm("Are you sure you want to permanently delete this mission along with all attacks belonging to this mission?")) {

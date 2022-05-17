@@ -249,5 +249,12 @@ rux-table {
   border: 2px solid #001828;
   border-radius: 5px;
   font-size: 32px;
+}
 
+.edit-team {
+  width: 10px;
+  position: relative;
+  top: -10px;
+  left: 10px;
+  transition: 0.4s;
 }

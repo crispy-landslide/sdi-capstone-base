@@ -50,14 +50,16 @@ function App() {
     }
     let newEvents = []
     // await user.offices.forEach(async officeId => console.log(officeId))
-    await user.offices.forEach(async office => await fetch(`${serverURL}/api/offices/${office.id}/events`, request)
-      .then(response => response.json())
-      .then(async data => {
-        newEvents = [...newEvents, ...data]
-        await setEvents(newEvents.filter(event => !event.is_deleted))
-        // console.log(events)
-      })
-      .catch(err => console.log(err)))
+
+    for (let office of user.offices) {
+      let events = await fetch(`${serverURL}/api/offices/${office.id}/events`, request)
+        .then(response => response.json())
+        .then(data => data)
+        .catch(err => console.log(err))
+      newEvents.push(...events)
+    }
+    setEvents(newEvents)
+    return newEvents
   }
 
   const fetchUserInfo = async () => {
@@ -118,7 +120,7 @@ function App() {
 
   const refresh = async (office_id, event_id) => {
     let user = await fetchUserInfo()
-    setCurrentOffice(user.offices.filter(office => office.id === office_id))
+    setCurrentOffice(user.offices.filter(office => office.id === office_id)[0])
     let events = await fetchEvents(user)
     setCurrentEvent(events?.find(event => event.id === event_id))
   }
@@ -127,7 +129,7 @@ function App() {
     let path = window.location.pathname
     let office_id = Number.parseInt(path.split('/')[2])
     let event_id = Number.parseInt(path.split('/')[4])
-    console.log(event_id, office_id)
+
     if (event_id && office_id && keycloak.authenticated) {
       refresh(office_id, event_id)
     }

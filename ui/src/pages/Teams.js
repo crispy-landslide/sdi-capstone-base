@@ -15,9 +15,11 @@ const Teams = () => {
   const [editTeam, setEditTeam] = useState(false)
 
   useEffect(async () => {
-    const teams = await getTeamsData()
-    await getUsersData(teams)
-  }, [])
+    if (currentEvent && currentOffice && user && keycloak.authenticated) {
+      const teams = await getTeamsData()
+      await getUsersData(teams)
+    }
+  }, [currentEvent && currentOffice && user && keycloak.authenticated])
 
   const getTeamsData = async () => {
     await setTeams(null)
@@ -129,12 +131,47 @@ const Teams = () => {
     }
   }
 
-  const deleteTeamHandler = (team) => {
+  const deleteTeamHandler = async (team) => {
+    if (window.confirm("Are you sure you want to permanently delete this team?")) {
+      const request = {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${keycloak.token}`
+        }
+      }
+      let deletedTeam = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams/${team.id}`, request)
+        .then(response => response.json())
+        .then(data => data)
+        .catch(err => console.log(err))
 
+      setEditTeam(false);
+      refreshComponent();
+    }
   }
 
-  const editTeamHandler = (e, team) => {
 
+  const editTeamHandler = async (e, team) => {
+    e.preventDefault();
+    let updatedTeam = {
+      name: e.target.name.value,
+      event_id: currentEvent.id
+    }
+    const request = {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${keycloak.token}`
+      },
+      body: JSON.stringify(updatedTeam)
+    }
+    let editedTeam = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams/${team.id}`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+
+    setEditTeam(false);
+    refreshComponent();
   }
 
   return (
