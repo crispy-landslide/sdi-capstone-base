@@ -608,19 +608,28 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
     res.status(400).send('Event ID not found in team')
   } else{
     let usersInfo = await knex.from('users').innerJoin('users_offices', 'users.email', 'users_offices.user_email').where({office_id: office_id})
-
+      .catch(err => {
+        console.log(err)
+        res.sendStatus(500)
+      })
     let usersTeams = await knex.from('users_teams').select('*').where({team_id: team_id})
+      .catch(err => {
+        console.log(err)
+        res.sendStatus(500)
+      })
+    // usersInfo =[{email, id, first_name, last_name, is_deleted, user_email, office_id, is_admin, is_editor}, {...}]
+    // usersTeams = [{user_email, team_id, role, is_deleted}, {...}]
 
-    // usersTeams.map(user => {
-
-    // })
 
 
-    .then(users => res.status(200).send(users))
-    .catch(err => {
-      console.log(err)
-      res.sendStatus(500)
+    usersTeams = usersTeams.map(user => {
+      let matchingUserInfo = usersInfo.filter(info => info.email === user.user_email)[0]
+      return {...matchingUserInfo, is_deleted: user.is_deleted, role: user.role, team_id: user.team_id}
     })
+
+    if (usersTeams) {
+      res.status(200).send(usersTeams)
+    }
   }
 })
 

@@ -145,7 +145,7 @@ function App() {
               }
               <Route path='/offices/:office_id/events/:event_id' element={<Event />} />
               <Route path='/offices/:office_id/events/:event_id/teams' element={<Teams />} />
-              <Route path='/offices/:office_id/events/:event_id/tasks' element={<Tasks />} />
+              {/* <Route path='/offices/:office_id/events/:event_id/tasks' element={<Tasks />} /> */}
               <Route path='/offices/:office_id/events/:event_id/attacks' element={<Attacks />} />
               <Route path='/offices/:office_id/events/:event_id/report' element={<Report />} />
               <Route path='/offices/:office_id/events/:event_id/settings' element={<EventSettings />} />

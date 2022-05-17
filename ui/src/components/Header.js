@@ -53,8 +53,10 @@ const Header = () => {
 
   const clickHandler = () => {
     if (keycloak.authenticated) {
+      navigate('/')
       keycloak.logout()
     } else {
+      navigate('/')
       keycloak.login()
     }
   }

@@ -80,7 +80,7 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
         <div className='formContainer'>
           <div className='formHeader'>
             <img className='close' src='/x-solid.svg' alt='close' onClick={() => setEditUser(null)} title='close component'/>
-            <h2>Edit a participant!</h2>
+            <h2>Edit participant</h2>
             <img className='trash' src='/trash-solid.svg' alt='delete' onClick={(e) => removeParticipant(e, user)} title='delete attack'/>
           </div>
           <form className='form' onSubmit={e => patchParticipant(e, user)}>
@@ -88,19 +88,19 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
             <p>Last Name: {user.last_name ?? 'N/A'}</p>
             <label>
               Role:
-              <div className='inputs'> <input type="text" name="role" id='role' required defaultValue={user.role} /> </div>
+              <div className='inputs'> <input className='edit-number' type="text" name="role" id='role' required defaultValue={user.role} /> </div>
             </label>
             <p>Email: {user.email}</p>
             <label className="permission-title" htmlFor="permission_select">Permission Level:</label>
             <div className='inputs'>
-              <select name="permissions" id="permission_select">
+              <select className='edit-number' name="permissions" id="permission_select">
                   <option value="participant" selected={!user.is_editor && !user.is_admin}>Participant</option>
                   <option value="editor" selected={user.is_editor && !user.is_admin}>Editor</option>
                   <option value="admin" selected={user.is_admin}>Admin</option>
               </select>
             </div>
             <div className='buttons'>
-              <input type="submit" value="Submit" />
+              <input className='button' type="submit" value="Submit" />
             </div>
           </form>
         </div>

@@ -1,5 +1,32 @@
 .teams {
   margin: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 65%;
+}
+
+.button-container {
+  width: 65%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 .newTabContainer {
@@ -33,6 +60,7 @@
 .addParticipantButton{
   display: flex;
   justify-content: right;
+  margin-block: 10px;
 }
 
 .formContainer-wrapper{
@@ -50,7 +78,7 @@
   flex-direction: column;
   background-color: #001828;
   width: 500px;
-  height: 420px;
+  height: 475px;
   margin-top: 10px;
   margin-bottom: 10px;
   border-radius: 10px;
@@ -90,16 +118,52 @@
 
 .inputs input {
   width: 375px;
-  height: 25px;
+  /* height: 25px; */
   border-radius: 5px;
   transition: 0.14s;
   outline: none;
  }
 
-.inputs input:focus { 
+.inputs input:focus {
   outline: none ! important;
-  border: 5px solid #4dacff;
-  box-shadow: 0 0 10px;
+  border: 3px solid #4dacff;
+  /* box-shadow: 0 0 10px; */
+}
+
+.add-team-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.add-team {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 30%;
+}
+
+.add-team-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.add-team-label {
+  margin-block: 10px;
+}
+
+.add-team-label {
+  margin-block: 10px;
+}
+
+.submit-new-team {
+  margin-block: 10px;
 }
 
 .permission-title {
@@ -114,17 +178,17 @@
   transition: 0.14s;
   outline: none;
  }
- 
-.form div select:focus {
+
+/* .form div select:focus {
   outline: none ! important;
   border:5px solid #4dacff;
   box-shadow: 0 0 10px;
- }
+ } */
 
 .buttons{
   display: flex;
   justify-content: center;
-  
+
 }
 .buttons input{
   border-radius: 5px;
@@ -135,7 +199,6 @@
   border-radius: 5px;
   background-color: #4dacff;
   border-color: #4dacff;
-  
 }
 
 .edit {
@@ -173,3 +236,7 @@
 }
 
 
+rux-table {
+  --table-row-background-color: #2d4763;
+  --table-header-background-color: #001828;
+}

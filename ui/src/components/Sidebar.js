@@ -23,7 +23,7 @@ const Sidebar = ({ setShowSidebar }) => {
     <div className='links'>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`} onClick={clickHandler}> Event Home </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams`} onClick={clickHandler}> Teams </Link>
-      <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/tasks`} onClick={clickHandler}> Tasks </Link>
+      {/* <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/tasks`} onClick={clickHandler}> Tasks </Link> */}
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks`} onClick={clickHandler}> Attacks </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/report`} onClick={clickHandler}> Report </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/settings`} onClick={clickHandler}> Settings </Link>

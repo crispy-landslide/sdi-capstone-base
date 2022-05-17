@@ -34,11 +34,21 @@ const Welcome = () => {
   return (
     <div className='welcome-wrapper'>
       {state.user.offices ?
-        <div>
-          <select onChange={changeOffice}>
-            {state.user.offices.map(office => <option key={office.id} value={office.id}>{office.name}</option>)}
-          </select>
+        <div className='office-selector'>
+          <div className='office-selector-label'>
+            Select Office
+          </div>
+          <div>
+            {state.currentOffice ?
+            <select onChange={changeOffice} className='edit-number selection' defaultValue={state.currentOffice.id}>
+              <option hidden value={state.currentOffice.id}>{state.currentOffice.name}</option>
+              {state.user.offices.map(office => <option key={office.id} value={office.id}>{office.name}</option>)}
+            </select> : ''
+            }
+
         </div>
+        </div>
+
         : ''
       }
       {state.events && filteredEvents ?

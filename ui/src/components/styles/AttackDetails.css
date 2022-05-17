@@ -143,13 +143,23 @@
   height: max(20vh, 100px);
 }
 
+.edit-text:focus {
+  outline: none;
+  border: 3px solid #4dacff;
+}
+
 .edit-number {
   background-color: #182637;
   border: 3px solid #98bdd3;
   border-radius: 5px;
   color: #cbdee9;
-  padding: 10px;
+  padding: 5px;
   width: 80%;
+}
+
+.edit-number:focus {
+  outline: none;
+  border: 3px solid #4dacff;
 }
 
 .submit-button-placeholder {
