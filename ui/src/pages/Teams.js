@@ -8,8 +8,10 @@ import { StateContext } from '../App.js'
 import './styles/Teams.css'
 import keycloak from '../keycloak'
 
+
 const Teams = () => {
-  const { user, teams, setTeams, currentEvent, users, setUsers, serverURL, fetchEvents, fetchUserInfo, currentOffice } = useContext(StateContext)
+  const { user, teams, setTeams, currentTeam, setCurrentTeam, currentEvent, users, setUsers, serverURL, fetchEvents, fetchUserInfo, currentOffice } = useContext(StateContext)
+  const state = useContext(StateContext)
   const [addingUser, setAddingUser] = useState(false)
   const [editUser, setEditUser] = useState(null)
   const [editTeam, setEditTeam] = useState(false)
@@ -34,7 +36,6 @@ const Teams = () => {
     let teams = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
             .then(response => response.json())
             .then(data => {
-              console.log(data)
               let filteredTeams = data.filter(team => team.is_deleted === false)
               setTeams(filteredTeams)
               return filteredTeams
@@ -86,7 +87,7 @@ const Teams = () => {
     }
   }
 
-  const submitNewTeam = (event) =>{
+  const submitNewTeam = async (event) =>{
     event.preventDefault()
 
     let addNewTeam = {
@@ -102,10 +103,13 @@ const Teams = () => {
       body: JSON.stringify(addNewTeam)
     }
 
-    fetch(`http://localhost:3001/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
-    .then(response => response.json())
-    .then(data => refreshComponent())
-    .catch(err => console.log(err))
+    let newTeam = await fetch(`http://localhost:3001/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+    console.log(newTeam)
+    await refreshComponent()
+    state.setCurrentTeam(newTeam[0])
   }
 
   const closeComponents = (event) =>{
@@ -146,7 +150,7 @@ const Teams = () => {
         .catch(err => console.log(err))
 
       setEditTeam(false);
-      refreshComponent();
+      await refreshComponent();
     }
   }
 
@@ -171,7 +175,12 @@ const Teams = () => {
       .catch(err => console.log(err))
 
     setEditTeam(false);
-    refreshComponent();
+    await refreshComponent();
+    state.setCurrentTeam(team)
+  }
+
+  const changeTeamHandler = (team) => {
+    state.setCurrentTeam(team)
   }
 
   return (
@@ -181,7 +190,7 @@ const Teams = () => {
 
           <RuxTabs id="tab-set-teams" small="true">
           {/* This is a dynamic a tab */}
-            {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`} onClick={(e) => closeComponents(e)}>{team.name} </RuxTab>)}
+            {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`} onClick={(e) => closeComponents(e)} selected={state.currentTeam && team.id === state.currentTeam.id ? 'selected': false} onClick={() => changeTeamHandler(team)}>{team.name} </RuxTab>)}
             <RuxTab id="tab-add-team"> + </RuxTab>
           </RuxTabs>
 

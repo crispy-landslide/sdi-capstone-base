@@ -8,7 +8,7 @@ import { RuxButton } from '@astrouxds/react'
 const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
   const state = useContext(StateContext)
 
-  const patchParticipant = (event, user) => {
+  const patchParticipant = async (event, user) => {
     event.preventDefault()
 
     let is_admin;
@@ -45,10 +45,13 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
       body: JSON.stringify(editedParticipant)
     }
 
-    fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/edit-user`, request)
-    .then(response => response.json())
-    .then(data => refresh())
-    .catch(err => console.log(err))
+    await fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/edit-user`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+
+    await refresh()
+    state.setCurrentTeam(state.teams.filter(team => team.id === user.team_id)[0])
   }
 
   const removeParticipant = (event, user) => {

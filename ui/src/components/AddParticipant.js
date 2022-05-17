@@ -7,7 +7,7 @@ import '../pages/styles/Teams.css'
 const AddParticipant = ({team, refresh, setAddingUser, setEditUser}) => {
   const state = useContext(StateContext)
 
-  const submitNewParticipant = (event, teamId) => {
+  const submitNewParticipant = async (event, teamId) => {
     event.preventDefault()
 
     let is_admin;
@@ -42,10 +42,12 @@ const AddParticipant = ({team, refresh, setAddingUser, setEditUser}) => {
       body: JSON.stringify(addNewParticipant)
     }
 
-    fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${teamId}/add-user`, request)
-    .then(response => response.json())
-    .then(data => refresh())
-    .catch(err => console.log(err))
+    await fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${teamId}/add-user`, request)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(err => console.log(err))
+    await refresh()
+    state.setCurrentTeam(state.teams.filter(team => team.id === team_id)[0])
   }
 
   return(
