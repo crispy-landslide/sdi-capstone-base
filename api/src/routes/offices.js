@@ -999,7 +999,7 @@ router.delete('/:office_id/events/:event_id', checkIfAuthorized, async (req, res
         .catch(() => res.sendStatus(500))
 
         await teamIds.forEach(async teamId => {
-          await knex('users_teams').where({team_id: teamId, is_deleted: false}).update({is_deleted: true})
+          await knex('users_teams').where({team_id: teamId.id, is_deleted: false}).update({is_deleted: true})
         })
 
         await knex('attacks').where({event_id: event_id, is_deleted: false}).update({is_deleted: true})
