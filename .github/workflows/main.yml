@@ -87,7 +87,7 @@ jobs:
       #   run: |
       #     docker run -e CI=true capstone-api npm run test
 
-  This workflow kicks off the deployment to Heroku for the UI
+  # This workflow kicks off the deployment to Heroku for the UI
   deploy-ui:
     name: Deploy UI to Heroku
     # Needs specifies the steps that must previously complete in order to deploy your application.
