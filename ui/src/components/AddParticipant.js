@@ -42,7 +42,7 @@ const AddParticipant = ({team, refresh, setAddingUser, setEditUser}) => {
       body: JSON.stringify(addNewParticipant)
     }
 
-    await fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${teamId}/add-user`, request)
+    await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${teamId}/add-user`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))

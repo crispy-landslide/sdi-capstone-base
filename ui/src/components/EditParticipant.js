@@ -45,7 +45,7 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
       body: JSON.stringify(editedParticipant)
     }
 
-    await fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/edit-user`, request)
+    await fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/edit-user`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
@@ -71,7 +71,7 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
         body: JSON.stringify(editedParticipant)
       }
 
-      fetch(`http://localhost:3001/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/remove-user`, request)
+      fetch(`${state.serverURL}/api/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams/${user.team_id}/remove-user`, request)
       .then(response => response.json())
       .then(data => refresh())
       .catch(err => console.log(err))

@@ -103,7 +103,7 @@ const Teams = () => {
       body: JSON.stringify(addNewTeam)
     }
 
-    let newTeam = await fetch(`http://localhost:3001/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
+    let newTeam = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
