@@ -26,93 +26,131 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       # Runs a single command using the runners shell to build the UI
-      - name: Build UI
-        run: |
-          docker build -t capstone-ui ./ui
+      # - name: Build UI
+      #   run: |
+      #     docker build -t capstone-ui ./ui
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: crsipylandslide/trojn-app
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: ./ui
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       # Runs a set of commands using the runners shell to test the UI
-      - name: Test UI
-        run: |
-          docker run -e CI=true capstone-ui npm run test
-          
+      # - name: Test UI
+      #   run: |
+      #     docker run -e CI=true capstone-ui npm run test
+
   # This workflow kicks off the build and test for the API
   build-and-test-api:
     name: Build and Test API
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build API
-        run: |
-          docker build -t capstone-api ./api
-      - name: Test API
-        run: |
-          docker run -e CI=true capstone-api npm run test
-  
-  # This workflow kicks off the deployment to Heroku for the UI
-  deploy-ui:
-    name: Deploy UI to Heroku
-    # Needs specifies the steps that must previously complete in order to deploy your application.
-    needs: [ build-and-test-ui, build-and-test-api ]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - uses: akhileshns/heroku-deploy@v3.12.12
-        with: 
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "gschool-sdi-ui"
-          heroku_email: "jeff.haddock.developer@gmail.com"
-          appdir: "ui/"
-          usedocker: true
-  
-  # This workflow kicks off the deployment to Heroku for the UI
-  deploy-api:
-    name: Deploy API to Heroku
-    needs: [ build-and-test-ui, build-and-test-api ]
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - uses: akhileshns/heroku-deploy@v3.12.12
-        with: 
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "gschool-sdi-api"
-          heroku_email: "jeff.haddock.developer@gmail.com"
-          appdir: "api/"
-          usedocker: true
-
-  # This workflow kicks off the linter for your API.  
-  run-api-linter:
-    name: Lint API Code Base
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      # - name: Build API
+      #   run: |
+      #     docker build -t capstone-api ./api
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          # Full git history is needed to get a proper list of changed files
-          fetch-depth: 0
-      # Installs dependencies on the runner for API
-      - name: Install linter options
-        run: npm --prefix ./api install
-      # Executes the linter on the API code base.
-      - name: Run Linter
-        run: npm --prefix ./api run lint
-  
-  # This workflow kicks off the linter for API.  
-  run-ui-linter:
-    name: Lint UI Code Base
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          fetch-depth: 0
-      # Installs dependencies on the runner for UI
-      - name: Install linter options
-        run: npm --prefix ./ui install
-      # Executes the linter on the UI code base.
-      - name: Run Linter
-        run: npm --prefix ./ui run lint
+          images: crsipylandslide/trojn-api
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: ./api
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Test API
+      #   run: |
+      #     docker run -e CI=true capstone-api npm run test
+
+  # This workflow kicks off the deployment to Heroku for the UI
+  # deploy-ui:
+  #   name: Deploy UI to Heroku
+  #   # Needs specifies the steps that must previously complete in order to deploy your application.
+  #   needs: [ build-and-test-ui, build-and-test-api ]
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: akhileshns/heroku-deploy@v3.12.12
+  #       with:
+  #         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+  #         heroku_app_name: "gschool-sdi-ui"
+  #         heroku_email: "jeff.haddock.developer@gmail.com"
+  #         appdir: "ui/"
+  #         usedocker: true
+
+  # This workflow kicks off the deployment to Heroku for the UI
+  # deploy-api:
+  #   name: Deploy API to Heroku
+  #   needs: [ build-and-test-ui, build-and-test-api ]
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v3
+  #     - uses: akhileshns/heroku-deploy@v3.12.12
+  #       with:
+  #         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+  #         heroku_app_name: "gschool-sdi-api"
+  #         heroku_email: "jeff.haddock.developer@gmail.com"
+  #         appdir: "api/"
+  #         usedocker: true
+
+  # This workflow kicks off the linter for your API.
+  # run-api-linter:
+  #   name: Lint API Code Base
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         # Full git history is needed to get a proper list of changed files
+  #         fetch-depth: 0
+  #     # Installs dependencies on the runner for API
+  #     - name: Install linter options
+  #       run: npm --prefix ./api install
+  #     # Executes the linter on the API code base.
+  #     - name: Run Linter
+  #       run: npm --prefix ./api run lint
+
+  # This workflow kicks off the linter for API.
+  # run-ui-linter:
+  #   name: Lint UI Code Base
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     # Installs dependencies on the runner for UI
+  #     - name: Install linter options
+  #       run: npm --prefix ./ui install
+  #     # Executes the linter on the UI code base.
+  #     - name: Run Linter
+  #       run: npm --prefix ./ui run lint
