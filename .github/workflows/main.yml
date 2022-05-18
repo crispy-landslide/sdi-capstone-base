@@ -26,9 +26,9 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       # Runs a single command using the runners shell to build the UI
-      - name: Build UI
-        run: |
-          docker build -t capstone-ui ./ui
+      # - name: Build UI
+      #   run: |
+      #     docker build -t capstone-ui ./ui
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
@@ -60,9 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build API
-        run: |
-          docker build -t capstone-api ./api
+      # - name: Build API
+      #   run: |
+      #     docker build -t capstone-api ./api
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:

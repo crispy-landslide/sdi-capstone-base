@@ -24,6 +24,7 @@ const AddOffice = () => {
       .catch(err => console.error(err))
 
     const userInformation = await state.fetchUserInfo();
+    newOffice && state.setCurrentOffice(newOffice);
 
 
   }
