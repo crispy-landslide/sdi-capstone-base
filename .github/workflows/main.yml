@@ -35,19 +35,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: crsipylandslide/trojn-app
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v4
+      #   with:
+      #     images: crsipylandslide/trojn-app
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: ./ui
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: crispylandslide/trojn-app:latest
+          # tags: ${{ steps.meta.outputs.tags }}
+          # labels: ${{ steps.meta.outputs.labels }}
       # Runs a set of commands using the runners shell to test the UI
       # - name: Test UI
       #   run: |
@@ -68,19 +69,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v4
-        with:
-          images: crsipylandslide/trojn-api
+      # - name: Extract metadata (tags, labels) for Docker
+      #   id: meta
+      #   uses: docker/metadata-action@v4
+      #   with:
+      #     images: crsipylandslide/trojn-api
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
           context: ./api
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: crispylandslide/trojn-api:latest
+          # tags: ${{ steps.meta.outputs.tags }}
+          # labels: ${{ steps.meta.outputs.labels }}
       # - name: Test API
       #   run: |
       #     docker run -e CI=true capstone-api npm run test
