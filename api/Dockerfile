@@ -1,11 +1,12 @@
-FROM node:alpine 
+FROM node:alpine
 
 WORKDIR /app
 
-COPY . /app
-RUN npm install -g nodemon@2.0.15 &&\
-    npm install
+COPY package.json ./
+COPY package-lock.json ./
 
-EXPOSE 8082
+RUN npm install
+
+COPY . ./
 
 CMD ["npm", "start"]
