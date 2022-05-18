@@ -411,7 +411,7 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
         await knex('users')
           .insert(newUser, ['*'])
           .catch((err) => {
-            console.log(err)
+            console.log("FIRST 500")
             res.sendStatus(500)
           })
         await knex('users_offices')
@@ -426,9 +426,17 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
       if(existingKey.length !== 0){
         await knex('users_teams')
           .where({user_email: email, team_id: team_id})
-          .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
+          .update({is_deleted: false}, ['*'])
           .catch((err) => {
-            console.log(err)
+            console.log("SECOND 500")
+            res.sendStatus(500)
+          })
+        await knex('users_offices')
+          .where({user_email: email, office_id: office_id})
+          .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
+          .then(() => res.sendStatus(201))
+          .catch((err) => {
+            console.log("THIRD 500")
             res.sendStatus(500)
           })
         } else{
@@ -443,7 +451,14 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
             .insert(newMember, ['*'])
             .then(data => res.status(201).json(data))
             .catch((err) => {
-              console.log(err)
+              console.log("FOURTH 500")
+              res.sendStatus(500)
+            })
+          await knex('users_offices')
+            .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
+            .then(data => res.status(201).json(data))
+            .catch((err) => {
+              console.log("FIFTH 500")
               res.sendStatus(500)
             })
         }

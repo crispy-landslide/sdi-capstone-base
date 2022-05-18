@@ -39,7 +39,7 @@ TROJN also allows users to view the results from previous events, making it easy
 
 # Link to Project
 Links to team projects (if applicable):
-<Heroku_Link>
+<URL_Link>
 
 # Features
 The following are a list of features provided by the application:
