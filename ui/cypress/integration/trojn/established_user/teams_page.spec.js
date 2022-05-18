@@ -54,7 +54,7 @@ describe('welcome-page functionality', () => {
     cy.get('input#role').first().type('Manager');
     cy.get('select.edit-number').first().select('Editor');
     cy.get('input.button').first().click();
-    cy.wait(1500);
+    cy.wait(2000);
     cy.get('rux-table').first().find('img.edit').last().click();
     // cy.wait(1000);
     cy.get('img.trash').first().click();
