@@ -4,6 +4,13 @@
 ## Overview
 TROJN is a web application that streamlines the creation, development, and execution of cyber defense exercises known as Cyber Table Tops (CTTs) along with attack simulations for better coverage of system vulnerabilities.
 
+## Team Members
+
+- [@crispy-landslide](https://github.com/crispy-landslide)
+- [@devonknudsen](https://github.com/devonknudsen)
+- [@mrichburg](https://github.com/mrichburg)
+- [@UvZoomE](https://github.com/UvZoomE)
+
 ## Table of Contents
 [Description](#Description)
 
@@ -27,8 +34,12 @@ The final output of an event is a report containing the risk matrix of all attac
 
 TROJN also allows users to view the results from previous events, making it easy to follow the development of a system and whether risks were mitigated.
 
+
+### Attack Page
 ![Attacks](/docs/images/Attacks.png)
 
+
+### Risk Matrix
 ![Report](/docs/images/Report.png)
 
 ## Link to Project
@@ -84,13 +95,6 @@ Environment Variables :
   - `POSTGRES_PASSWORD` -- Database password
   - `POSTGRES_PORT` -- Database port number
   - `POSTGRES_DB` -- Name of the database
-
-## Team Members
-
-- [@crispy-landslide](https://github.com/crispy-landslide)
-- [@devonknudsen](https://github.com/devonknudsen)
-- [@mrichburg](https://github.com/mrichburg)
-- [@UvZoomE](https://github.com/UvZoomE)
 
 
 ## Dependencies
