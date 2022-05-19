@@ -514,22 +514,6 @@ router.get('/:office_id', checkIfBelongsToOffice, (req, res) =>{
   .catch(() => res.sendStatus(500))
 })
 
-router.get('/:office_id/users', checkIfBelongsToOffice, (req, res) =>{
-  const { office_id } = req.params;
-
-  knex.select('*').from('users').where({office_id: office_id})
-  .then(data => res.status(200).send(data))
-  .catch(() => res.sendStatus(500))
-})
-
-router.get('/:office_id/users/:user_email', checkIfBelongsToOffice, (req, res) =>{
-  const { office_id, user_email } = req.params;
-
-  knex.select('*').from('users').where({email: user_email, office_id: office_id})
-  .then(data => res.status(200).send(data))
-  .catch(() => res.sendStatus(500))
-})
-
 router.get('/:office_id/events', checkIfBelongsToOffice, (req, res) =>{
   const { office_id } = req.params;
 
@@ -988,35 +972,6 @@ router.delete('/:office_id', checkIfAuthorized, (req, res) =>{
     })
     .then(data => res.status(200).json(data))
     .catch(() => res.sendStatus(500))
-})
-
-/*
-{
-  Headers: Token -- only when using authentication
-  Body:{
-    email,
-    is_admin,
-    is_editor
-  }
-}
-*/
-router.delete('/:office_id/remove-user', checkIfAuthorized, async (req, res) =>{
-
-  const { office_id } = req.params;
-  const { email } = req.body;
-
-  if(email != undefined){
-    await knex('users_offices')
-    .where({user_email: email, office_id: office_id, is_deleted: false})
-    .update({is_deleted: true}, ['*'])
-      .then(data => res.status(200).json(data))
-      .catch(() => res.sendStatus(500))
-  } else{
-    res.status(400).send('Request body not complete. Request body should look like: \
-    { \
-      "email": <text - not nullable>, \
-    }')
-  }
 })
 
 router.delete('/:office_id/events/:event_id', checkIfAuthorized, async (req, res) =>{

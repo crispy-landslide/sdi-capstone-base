@@ -27,6 +27,10 @@ The final output of an event is a report containing the risk matrix of all attac
 
 TROJN also allows users to view the results from previous events, making it easy to follow the development of a system and whether risks were mitigated.
 
+![Attacks](/docs/images/Attacks.png)
+
+![Report](/docs/images/Report.png)
+
 ## Link to Project
 [trojn.e-acres.com](https://trojn.e-acres.com)
 
