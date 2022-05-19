@@ -18,7 +18,6 @@ const AttackCard = ({ attack, mission, add, fetchAttacks, refresh }) => {
   }, [])
 
   const onAdd = () => {
-    console.log("Add event");
     const eventsCopy = [...state.events]
     eventsCopy.push({
       name: `System ${state.events.length + 1} CTT`,

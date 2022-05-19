@@ -43,10 +43,8 @@ const EventSettings = () => {
       state.setCurrentEvent(returnEvent[0])
       setStartDate(new Date(returnEvent[0].start_date))
       setEndDate(new Date(returnEvent[0].end_date))
-      console.log("Updated Event: ", returnEvent)
-      console.log(`Submitted changes for event: ${state.currentEvent.name}`)
       await state.fetchEvents(state.user);
-      navigate(`/`)
+      navigate(`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`)
     }
   }
 
@@ -72,7 +70,6 @@ const EventSettings = () => {
         .then(response => response.json())
         .then(data => data)
         .catch(err => console.error(err))
-      console.log(returnEvent)
       state.setCurrentEvent(null)
       await state.fetchEvents(state.user);
       navigate('/')

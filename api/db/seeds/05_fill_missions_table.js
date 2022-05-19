@@ -1,9 +1,6 @@
 
 const { faker } = require('@faker-js/faker');
 
-// TODO: FIX SEEDING
-// TODO: TEST EXISTING ROUTES, CREATE THE OTHER ONES
-
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -24,7 +21,7 @@ exports.seed = async function(knex) {
     }
     return missionList
   }
-  // Deletes ALL existing entries
+
   await knex('missions').select('*')
   .then(async (rows) => {
     if (rows.length === 0) {

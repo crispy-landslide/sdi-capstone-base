@@ -41,7 +41,6 @@ const EventCard = ({ event, add }) => {
   }
 
   const onClickEvent = () => {
-    console.log(event)
     state.setCurrentEvent(event)
     navigate(`/offices/${state.currentOffice.id}/events/${event.id}`)
   }

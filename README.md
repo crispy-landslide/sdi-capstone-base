@@ -43,6 +43,9 @@ The following are a list of features provided by the application:
 - Teams:
   - List of all teams and their users within each CTT event
 
+- Missions:
+  - Set of particular attacks within an event
+
 - Attacks:
   - All attacks organized by user created missions
 

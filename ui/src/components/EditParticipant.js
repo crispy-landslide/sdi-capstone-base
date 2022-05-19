@@ -14,8 +14,6 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
     let is_admin;
     let is_editor;
 
-    console.log(event.target.permission_select.value)
-
     if(event.target.permission_select.value === "editor"){
       is_admin = false;
       is_editor = true;
@@ -33,8 +31,6 @@ const EditParticipant = ({user, refresh, setEditUser, setAddingUser}) => {
       is_admin: is_admin,
       is_editor: is_editor
     }
-
-    console.log(editedParticipant)
 
     let request = {
       method: 'PATCH',

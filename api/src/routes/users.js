@@ -45,7 +45,6 @@ router.post('/', async (req, res) => {
       knex('users')
         .insert(newUser, ['*'])
         .then(data => {
-          console.log('inserted')
           res.status(201).send(data[0])
         })
         .catch(() => {
@@ -55,26 +54,13 @@ router.post('/', async (req, res) => {
   }
 });
 
-// TODO: CHANGE USER EMAIL TO ID OF TOKEN
-// TODO: CREATE GET ROUTE FOR /my-account
-// router.get('/:user_id', (req, res) =>{
-//   const { user_id } = req.params;
-
-//   knex.select('*').from('users').where({id: user_id})
-//   .then(data => res.status(200).send(data))
-//   .catch(() => res.sendStatus(500))
-// })
-
 router.get('/my-account', async (req, res) =>{
   const token = req.kauth.grant.access_token.content;
 
   const userInfo = await knex.select('*').from('users').where({email: token.email})
-  // .then(data => data)
   .catch(() => res.sendStatus(500))
 
   const userOffices = await knex.from('offices').innerJoin('users_offices', 'offices.id', 'users_offices.office_id').where({user_email: token.email})
-  // const userOffices = await knex.select('office_id').from('users_offices').where({user_email: token.email})
-  // .then(data => data)
   .catch(() => res.sendStatus(500))
 
   const combinedUserInfo = {

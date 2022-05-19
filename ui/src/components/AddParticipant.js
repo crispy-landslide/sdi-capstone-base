@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
 import { StateContext } from '../App.js'
-// import './styles/Teams.css'
 import keycloak from '../keycloak'
 import '../pages/styles/Teams.css'
 

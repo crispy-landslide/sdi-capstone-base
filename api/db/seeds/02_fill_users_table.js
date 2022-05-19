@@ -1,7 +1,5 @@
 const { faker } = require('@faker-js/faker');
 const { getRandomBool } = require('../../utils/seedUtils.js');
-// const fs = require('fs');
-// const path = require("path");
 
 const generateUsers = () =>{
   const userList = [];

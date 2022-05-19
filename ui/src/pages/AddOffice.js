@@ -25,8 +25,6 @@ const AddOffice = () => {
 
     const userInformation = await state.fetchUserInfo();
     newOffice && state.setCurrentOffice(newOffice);
-
-
   }
 
   return (

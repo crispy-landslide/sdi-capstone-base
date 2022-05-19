@@ -68,7 +68,6 @@
 }
 
 .logout {
-  /* width: max(60px, 5vh); */
   transition: 0.3s;
 }
 
@@ -100,7 +99,7 @@
 
 .svg {
   width: max(20px, 2vh);
-  -webkit-filter: invert(100%); /* safari 6.0 - 9.0 */
+  -webkit-filter: invert(100%);
   filter: invert(100%);
   margin-right: 10px;
 }

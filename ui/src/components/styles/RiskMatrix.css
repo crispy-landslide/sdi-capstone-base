@@ -3,7 +3,6 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
 }
 
 .risk-matrix {
@@ -20,14 +19,17 @@
   align-items: center;
   flex-grow: 3;
   padding: 0px;
-  /* width: 78vh;
-  height: 78vh; */
 }
 
 .y-label {
   height: calc(78vh - calc(12vh + 6vh));
   margin-bottom: calc(12vh + 6vh);
-  writing-mode: sideways-lr;
+  writing-mode: vertical-lr;
+  transform: rotate(-180deg);
+  -moz-transform: rotate(-180deg);
+  -webkit-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
+  -ms-transform: rotate(-180deg);
   font-size: 4vh;
   text-align: center;
 }

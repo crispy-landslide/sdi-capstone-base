@@ -1,10 +1,6 @@
 const { faker } = require('@faker-js/faker');
 const { getRandomNumber, getRandomBool } = require('../../utils/seedUtils.js');
 
-// TODO: FIX SEEDING
-// TODO: TEST EXISTING ROUTES, CREATE THE OTHER ONES
-
-
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }

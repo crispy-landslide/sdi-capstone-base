@@ -32,7 +32,7 @@ const Teams = () => {
         'Authorization': `Bearer ${keycloak.token}`
       }
     }
-    // below grabs all the teams for this particular event
+
     let teams = await fetch(`${serverURL}/api/offices/${currentOffice.id}/events/${currentEvent.id}/teams`, request)
             .then(response => response.json())
             .then(data => {
@@ -107,7 +107,6 @@ const Teams = () => {
       .then(response => response.json())
       .then(data => data)
       .catch(err => console.log(err))
-    console.log(newTeam)
     await refreshComponent()
     state.setCurrentTeam(newTeam[0])
   }
@@ -186,16 +185,12 @@ const Teams = () => {
   return (
       teams && users ?
         <div className='teams'>
-          {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
 
           <RuxTabs id="tab-set-teams" small="true">
-          {/* This is a dynamic a tab */}
             {teams.map(team => <RuxTab id={`tab-id-${team.id}`} key={`tab-id-${team.id}`} onClick={(e) => closeComponents(e)} selected={state.currentTeam && team.id === state.currentTeam.id ? 'selected': false} onClick={() => changeTeamHandler(team)}>{team.name} </RuxTab>)}
             <RuxTab id="tab-add-team"> + </RuxTab>
           </RuxTabs>
 
-
-          {/* for every team, there must be a tab, a panel for the tab, and a table for each panel */}
           <RuxTabPanels aria-labelledby="tab-set-teams">
           {teams.map((team) =>
             <RuxTabPanel aria-labelledby={`tab-id-${team.id}`} key={`tab-id-${team.id}`}>

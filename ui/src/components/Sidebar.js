@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { StateContext } from '../App.js'
 import './styles/Sidebar.css'
 
-/* Set the width of the sidebar to 0 and the left margin of the page content to 0 */
 function closeNav() {
   document.getElementById("sidebar").style.width = "0";
   document.getElementById("main-page").style.marginLeft = "0";
@@ -23,7 +22,6 @@ const Sidebar = ({ setShowSidebar }) => {
     <div className='links'>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}`} onClick={clickHandler}> Event Home </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/teams`} onClick={clickHandler}> Teams </Link>
-      {/* <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/tasks`} onClick={clickHandler}> Tasks </Link> */}
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/attacks`} onClick={clickHandler}> Attacks </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/report`} onClick={clickHandler}> Report </Link>
       <Link to={`/offices/${state.currentOffice.id}/events/${state.currentEvent.id}/settings`} onClick={clickHandler}> Settings </Link>

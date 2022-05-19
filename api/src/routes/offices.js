@@ -39,8 +39,6 @@ const checkIfBelongsToOffice = async (req, res, next) => {
   }
 }
 
-//TODO: REVIEW AND REFACTOR ALL ROUTES
-
 /*
 {
   Headers: Token -- only when using authentication
@@ -422,7 +420,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           .insert(newUser, ['*'])
           .catch((err) => {
             console.log(err)
-            console.log("FIRST 500")
             return "Error"
           })
 
@@ -445,7 +442,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           .update({is_deleted: false}, ['*'])
           .catch((err) => {
             console.log(err)
-            console.log("SECOND 500")
             return "Error"
           })
 
@@ -457,7 +453,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           .then(data => data)
           .catch((err) => {
             console.log(err)
-            console.log("THIRD 500")
             return "Error"
           })
 
@@ -480,7 +475,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           .then(data => data)
           .catch((err) => {
             console.log(err)
-            console.log("FOURTH 500")
             return "Error"
           })
 
@@ -491,7 +485,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           .then(data => data)
           .catch((err) => {
             console.log(err)
-            console.log("FIFTH 500")
             return "Error"
           })
 
@@ -513,7 +506,6 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
   }
 })
 
-// TODO: CHECK IF USER IS PART OF THE REQUESTED OFFICE -- AFTER AUTH IMPLEMENTED
 router.get('/:office_id', checkIfBelongsToOffice, (req, res) =>{
   const { office_id } = req.params;
 
@@ -530,7 +522,6 @@ router.get('/:office_id/users', checkIfBelongsToOffice, (req, res) =>{
   .catch(() => res.sendStatus(500))
 })
 
-//TODO: POSSIBLY DELETE DUE TO USERS SUBROUTE
 router.get('/:office_id/users/:user_email', checkIfBelongsToOffice, (req, res) =>{
   const { office_id, user_email } = req.params;
 
@@ -539,7 +530,6 @@ router.get('/:office_id/users/:user_email', checkIfBelongsToOffice, (req, res) =
   .catch(() => res.sendStatus(500))
 })
 
-// TODO: CHECK FOR REFACTOR OF START AND END TIMES -- DOES IT NEED TO BE A RANGE RATHER THAN SPECIFIC TIMES? -- SHOULD IT BE DATE OR DATETIME?
 router.get('/:office_id/events', checkIfBelongsToOffice, (req, res) =>{
   const { office_id } = req.params;
 
@@ -566,7 +556,6 @@ router.get('/:office_id/events', checkIfBelongsToOffice, (req, res) =>{
   }
 })
 
-// TODO: CHECK IF USER IS PART OF THE REQUESTED OFFICE -- AFTER AUTH IMPLEMENTED
 router.get('/:office_id/events/:event_id', checkIfBelongsToOffice, async (req, res) =>{
   const { office_id, event_id } = req.params;
 
@@ -671,10 +660,6 @@ router.get('/:office_id/events/:event_id/teams/:team_id/users', checkIfBelongsTo
         console.log(err)
         res.sendStatus(500)
       })
-    // usersInfo =[{email, id, first_name, last_name, is_deleted, user_email, office_id, is_admin, is_editor}, {...}]
-    // usersTeams = [{user_email, team_id, role, is_deleted}, {...}]
-
-
 
     usersTeams = usersTeams.map(user => {
       let matchingUserInfo = usersInfo.filter(info => info.email === user.user_email)[0]

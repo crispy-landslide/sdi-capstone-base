@@ -15,7 +15,6 @@ const Attacks = () => {
   const [editMission, setEditMission] = useState(false)
   const navigate = useNavigate();
 
-
   const compareFunction = (a, b) => {
     if (a.attack === b.attack) {
       return a.variant - b.variant
@@ -31,7 +30,6 @@ const Attacks = () => {
       return arrayCopy
     }
     return []
-
   }
 
   const fetchMissions = async () => {
@@ -159,8 +157,9 @@ const Attacks = () => {
       .then(data => data)
       .catch(err => console.log(err))
 
+    state.setCurrentMission(addedMission[0])
     setEditMission(false);
-    await refresh(addedMission);
+    await refresh(addedMission[0]);
   }
 
   const changeMissionHandler = (mission) => {
@@ -171,13 +170,15 @@ const Attacks = () => {
   }
 
 
+
   return ( state.missions && state.attacks ?
     <div className='attacks'>
     <RuxTabs id="tab-set-id-1" small>
-      {state.missions.map(mission =>
-        <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`} selected={state.currentMission && mission.id === state.currentMission.id ? 'selected': false} onClick={() => changeMissionHandler(mission)}>
+      {state.missions.map(mission => {
+        return <RuxTab id={`tab-id-${mission.id}`} key={`tab-id-${mission.id}`} selected={state.currentMission && mission.id === state.currentMission.id ? 'selected': false} onClick={() => changeMissionHandler(mission)}>
           {mission.name}
         </RuxTab>
+      }
       )}
       <RuxTab id="tab-id-add">+</RuxTab>
     </RuxTabs>
@@ -205,7 +206,7 @@ const Attacks = () => {
                 }
               </h2>
               <button className='add-attack-button' onClick={() => setAddAttack(!addAttack)}>+</button>
-              {addAttack ? <AttackDetails attack={{}} fetchAttacks={fetchAttacks} addAttack='true' setAddAttack={setAddAttack} refresh={refresh} mission={mission}/> : ''}
+              {addAttack ? <AttackDetails attack={{mission_id: mission.id}} fetchAttacks={fetchAttacks} addAttack='true' setAddAttack={setAddAttack} refresh={refresh} mission={mission}/> : ''}
               {filterAndSortAttacks(state.attacks, mission).map(attack => <AttackCard key={`attack-id-M${mission.number}A${attack.attack}V${attack.variant}`} attack={attack} mission={mission} fetchAttacks={fetchAttacks} refresh={refresh}/>)}
             </div>
           </RuxTabPanel>

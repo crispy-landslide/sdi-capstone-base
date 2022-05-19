@@ -1,13 +1,11 @@
 import '@astrouxds/astro-web-components/dist/astro-web-components/astro-web-components.css'
 import './App.css'
 import React, { useEffect, useState, createContext } from 'react';
-import config from './config'
 import {Routes, Route} from 'react-router-dom'
 import Header from './components/Header';
 import Welcome from './pages/Welcome'
 import Event from './pages/Event'
 import Teams from './pages/Teams'
-import Tasks from './pages/Tasks'
 import Attacks from './pages/Attacks'
 import Report from './pages/Report'
 import AddOffice from './pages/AddOffice'
@@ -19,8 +17,6 @@ import keycloak from './keycloak'
 const initOptions = {
   onLoad: 'login-required'
 }
-
-// const ApiUrl = config[process.env.REACT_APP_NODE_ENV || "development"].apiUrl;
 
 export const StateContext = createContext(null);
 
@@ -50,7 +46,6 @@ function App() {
       }
     }
     let newEvents = []
-    // await user.offices.forEach(async officeId => console.log(officeId))
 
     for (let office of user.offices) {
       let events = await fetch(`${serverURL}/api/offices/${office.id}/events`, request)
@@ -76,8 +71,6 @@ function App() {
       .then(async response => {
           if (response.status === 201) {
             return await response.json()
-          } else {
-            console.log(response.status)
           }
       })
       .catch(err => console.log(err))
@@ -110,9 +103,6 @@ function App() {
   }
 
   const eventHandler = async (event, error) => {
-    if (event === 'onReady') {
-      console.log("Ready")
-    }
     if (event === 'onAuthSuccess') {
       let user = await fetchUserInfo()
       user.offices && setCurrentOffice(user.offices[0])
@@ -149,7 +139,6 @@ function App() {
               }
               <Route path='/offices/:office_id/events/:event_id' element={<Event />} />
               <Route path='/offices/:office_id/events/:event_id/teams' element={<Teams />} />
-              {/* <Route path='/offices/:office_id/events/:event_id/tasks' element={<Tasks />} /> */}
               <Route path='/offices/:office_id/events/:event_id/attacks' element={<Attacks />} />
               <Route path='/offices/:office_id/events/:event_id/report' element={<Report />} />
               <Route path='/offices/:office_id/events/:event_id/settings' element={<EventSettings />} />

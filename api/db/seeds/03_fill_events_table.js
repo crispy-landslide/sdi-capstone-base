@@ -40,7 +40,6 @@ exports.seed = async function(knex) {
   await knex('events').select('*')
   .then((rows) => {
     if (rows.length === 0) {
-      // console.log(generateEvents().length)
       return knex('events').insert(generateEvents());
     }
   })

@@ -27,7 +27,6 @@ const Welcome = () => {
   }, [state.events, state.currentOffice])
 
   const changeOffice = (event) => {
-    console.log(event.target.value)
     state.setCurrentOffice(state.user?.offices.filter(office => office.id == event.target.value)[0])
   }
 
