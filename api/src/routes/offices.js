@@ -231,10 +231,11 @@ router.post('/:office_id/events/:event_id/missions', checkIfEditor, async (req, 
   if (name != undefined && number != undefined ){
 
     const officeId = await knex.select('office_id').from('events').where({id: event_id})
-    .then(data => data[0].office_id)
+      .then(data => data[0].office_id)
+      .catch(err => console.log(err))
 
     if(officeId != office_id){
-      res.sendStatus(400).send('Provided office ID not found in event')
+      return res.sendStatus(400).send('Provided office ID not found in event')
     } else{
       const newMission = {
         name,
@@ -243,10 +244,18 @@ router.post('/:office_id/events/:event_id/missions', checkIfEditor, async (req, 
         is_deleted: false
       }
 
-      await knex('missions')
+      let dbResult = await knex('missions')
         .insert(newMission, ['*'])
-        .then(data => res.status(201).json(data))
-        .catch(() => res.sendStatus(500))
+        .then(data => data)
+        .catch(err => {
+          console.log(err)
+          return "Error"
+        })
+      if (dbResult === "Error") {
+        res.sendStatus(500)
+      } else {
+        res.status(201).json(dbResult)
+      }
     }
   } else{
     res.status(400).send('Request body not complete. Request body should look like: \
