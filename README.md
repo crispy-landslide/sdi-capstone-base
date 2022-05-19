@@ -1,20 +1,10 @@
-Create a project-wide README.md
-Include the following:
-    Title of project
-    Links to team projects (if applicable)
-    Example usage, like a URL a user could visit in order to see output for your site
-    Environment requirements, like making sure the developer is using a certain Node version
-    Development code, if it exists
-    Installing dependencies, like npm install --production, etc.
-
-
 # TROJN
 
 
-# Overview
+## Overview
 TROJN is a web application that streamlines the creation, development, and execution of cyber defense exercises known as Cyber Table Tops (CTTs) along with attack simulations for better coverage of system vulnerabilities.
 
-# Table of Contents
+## Table of Contents
 [Description](#Description)
 
 [Usage](#Usage)
@@ -28,7 +18,7 @@ TROJN is a web application that streamlines the creation, development, and execu
 - [Backend](#Backend)
 
 
-# Description
+## Description
 TROJN allows users to initiate attack and counter-offensive measures to gauge the level of vulnerabilities in a certain system via a Cyber Table Top (CTT) execution blueprint. A CTT is a thought exercise where the Red Team attacks vulnerabilities in the system and the Blue team determines whether the attacks are valid, the impact of the attacks on the mission, and the likelihood the attacks will succeed. Attacks are given a risk level of low, medium, or high to inform both leadership and the development team in their decision-making processes.
 
 TROJN facilitates the planning of CTT events by allowing users to fill out teams and create attacks. Before the event, the Red Team can create the attacks that will be discussed during the event. During event execution, the Red Team and Blue team will go through each attack and determine its risk level.
@@ -37,59 +27,29 @@ The final output of an event is a report containing the risk matrix of all attac
 
 TROJN also allows users to view the results from previous events, making it easy to follow the development of a system and whether risks were mitigated.
 
-# Link to Project
-Links to team projects (if applicable):
-<URL_Link>
+## Link to Project
+[trojn.e-acres.com](https://trojn.e-acres.com)
 
-# Features
+## Features
 The following are a list of features provided by the application:
-- Account:
-  - Group Permissions:
-    - Any user may register and login
+- Account creation and login
 
-- Offices:
-  - Groups of users that take ownership of their own user created events
-  - Group Permissions:
-    - An administrative user may create an office
-    - Any user may switch between the offices they're assigned to
-  - NOTE:
-    - Currently a user can only create one office, but can be added to multiple
+- Office creation and management
+  - Offices are groups of users that take ownership of their own user created events
 
 - Events:
-  - CTT events owned by user created offices which contain an lists of teams, attacks, and reports
-  - Group Permissions:
-    - An administrative user may create, edit and remove any event within their offices
-    - Any user within an office may view all of its events
+  - CTT events owned by user created offices which contain lists of teams, attacks, and reports
 
 - Teams:
   - List of all teams and their users within each CTT event
-  - Any CTT event may have any number of teams containing any number of users
-  - Group Permissions:
-    - An administrative user may create, edit and remove a team from an event they own
-    - Any user can view the teams of any event their office owns
-  - NOTE:
-    - Currently, there is no frontend feature to add a user to an office without adding them to a team direcly, so adding a partipant to a team is the only way to add a user to an office
 
 - Attacks:
-  - List of all attacks within a CTT event seperated by mission
-  - Each CTT event may have any number of attacks
-  - Each attack contains several metrics related to it such as description, likelihood, mission impact, etc.
-  - Group Permissions:
-    - An administrative user may create, edit and remove missions and attacks from an event they own
-    - An editor may change the values of any field within any attack their office owns
-    - Any user can view the attacks and missions of any event their office owns
+  - All attacks organized by user created missions
 
 - Reports:
-  - Displays a risk matrix of all attacks within an event
-  - Each attack within the matrix can be clicked, navigating the user to detailed look at that specified attack on the attacks page
-  - Group Permissions:
-    - An administrative user may create, edit and remove missions and attacks from an event they own
-    - Any user can view and click an attack within the risk matrix of any event their office owns
-  - NOTE:
-    - In the future, we plan to add a feature to upload user generated reports for each event
+  -  Generate and display a risk matrix of all attacks within an event
 
-
-# Environment Requirements
+## Environment Requirements
 Node version 14 or higher is required
 Docker version 20 or higher is required
 Environment Variables :
@@ -118,7 +78,7 @@ Environment Variables :
   - `POSTGRES_PORT` -- Database port number
   - `POSTGRES_DB` -- Name of the database
 
-# Team Members
+## Team Members
 
 - [@crispy-landslide](https://github.com/crispy-landslide)
 - [@devonknudsen](https://github.com/devonknudsen)
@@ -126,10 +86,10 @@ Environment Variables :
 - [@UvZoomE](https://github.com/UvZoomE)
 
 
-# Dependencies
+## Dependencies
 'npm install' to install dependencies
 
-## Frontend
+### Frontend
 - Astrouxds/react: ^6.6.0,
 - React-keycloak/web: ^3.4.0,
 - Keycloak-js: ^18.0.0,
@@ -143,7 +103,7 @@ Environment Variables :
   - eslint-plugin-jest: ^26.1.4,
   - eslint-plugin-react: ^7.29.4
 
-## Backend
+### Backend
 - cors: ^2.8.5,
 - express: ^4.17.3,
 - express-session: ^1.17.2,
