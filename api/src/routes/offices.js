@@ -387,13 +387,14 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
   if(email != undefined || role != undefined || is_admin != undefined || is_editor != undefined){
 
     const officeId = await knex.select('office_id').from('events').where({id: event_id})
-    .then(data => data[0].office_id)
+      .then(data => data[0].office_id)
+      .catch(err => console.log(err))
 
-    if(officeId != office_id){
-      res.sendStatus(400).send('Office ID not found in event')
-    } else{
-      let existingUser = await knex('users').select('*').where({email: email})
-      if(existingUser.length === 0 ){
+    if (officeId != office_id) {
+      return res.sendStatus(400).send('Office ID not found in event')
+    } else {
+      let existingUser = await knex('users').select('*').where({email: email}).catch(err => console.log(err))
+      if (existingUser.length === 0 ) {
         const newUser = {
           id: null,
           email: email,
@@ -408,63 +409,92 @@ router.post('/:office_id/events/:event_id/teams/:team_id/add-user', checkIfAutho
           is_editor: Boolean(is_editor),
           is_deleted: false
         }
-        await knex('users')
+        let dbResult = await knex('users')
           .insert(newUser, ['*'])
           .catch((err) => {
+            console.log(err)
             console.log("FIRST 500")
-            res.sendStatus(500)
+            return "Error"
           })
-        await knex('users_offices')
+
+        if (dbResult === 'Error') return res.sendStatus(500);
+
+        dbResult = await knex('users_offices')
           .insert(joinUser, ['*'])
           .catch((err) => {
             console.log(err)
-            res.sendStatus(500)
+            return "Error"
           })
-        }
 
-      let existingKey = await knex('users_teams').select('*').where({user_email: email, team_id: team_id})
-      if(existingKey.length !== 0){
-        await knex('users_teams')
+        if (dbResult === 'Error') return res.sendStatus(500);
+      }
+
+      let existingKey = await knex('users_teams').select('*').where({user_email: email, team_id: team_id}).catch(err => console.log(err))
+      if (existingKey.length !== 0) {
+        let dbResult = await knex('users_teams')
           .where({user_email: email, team_id: team_id})
           .update({is_deleted: false}, ['*'])
           .catch((err) => {
+            console.log(err)
             console.log("SECOND 500")
-            res.sendStatus(500)
+            return "Error"
           })
-        await knex('users_offices')
+
+        if (dbResult === "Error") return res.sendStatus(500);
+
+        dbResult = await knex('users_offices')
           .where({user_email: email, office_id: office_id})
           .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
-          .then(() => res.sendStatus(201))
+          .then(data => data)
           .catch((err) => {
+            console.log(err)
             console.log("THIRD 500")
-            res.sendStatus(500)
+            return "Error"
           })
-        } else{
-          const newMember = {
-            user_email: email,
-            role: role,
-            is_deleted: false,
-            team_id: team_id
-          }
 
-          await knex('users_teams')
-            .insert(newMember, ['*'])
-            .then(data => res.status(201).json(data))
-            .catch((err) => {
-              console.log("FOURTH 500")
-              res.sendStatus(500)
-            })
-          await knex('users_offices')
-            .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
-            .then(data => res.status(201).json(data))
-            .catch((err) => {
-              console.log("FIFTH 500")
-              res.sendStatus(500)
-            })
+        if (dbResult === "Error") {
+          return res.sendStatus(500)
+        } else {
+          res.status(201).json(dbResult)
         }
+
+      } else{
+        const newMember = {
+          user_email: email,
+          role: role,
+          is_deleted: false,
+          team_id: team_id
+        }
+
+        let dbResult = await knex('users_teams')
+          .insert(newMember, ['*'])
+          .then(data => data)
+          .catch((err) => {
+            console.log(err)
+            console.log("FOURTH 500")
+            return "Error"
+          })
+
+        if (dbResult === "Error") return res.sendStatus(500)
+
+        dbResult = await knex('users_offices')
+          .update({role: role, is_admin: is_admin, is_editor: is_editor, is_deleted: false}, ['*'])
+          .then(data => data)
+          .catch((err) => {
+            console.log(err)
+            console.log("FIFTH 500")
+            return "Error"
+          })
+
+        if (dbResult === "Error") {
+          return res.sendStatus(500)
+        } else {
+          res.status(201).json(dbResult)
+        }
+      }
     }
   } else{
-    res.status(400).send('Request body not complete. Request body should look like: \
+    return res.status(400).send('Request body not complete. Request body should look like: \
     { \
       "email": <text - not nullable>, \
       "role": <text - not nullable> \
