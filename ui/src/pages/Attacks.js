@@ -214,8 +214,8 @@ const Attacks = () => {
       <RuxTabPanel aria-labelledby="tab-id-add">
         <h2 className='center'>
           <form className='edit-mission-name' onSubmit={addMissionHandler}>
-            Mission <input className='edit-mission-number' type='number' name='number' id='number' min='0' placeholder='3'/> :
-            <input className='edit-name' type='text' name='name' id='name' placeholder='disrupt comms...'/>
+            Mission <input className='edit-mission-number' type='number' name='number' id='number' min='1' defaultValue='1' required/> :
+            <input className='edit-name' type='text' name='name' id='name' placeholder='disrupt comms' required/>
             <input className='button' type='submit' value='Add new mission'/>
           </form>
         </h2>
