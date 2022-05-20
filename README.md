@@ -36,11 +36,11 @@ TROJN also allows users to view the results from previous events, making it easy
 
 
 ### Attack Page
-![Attacks](/docs/images/Attacks.png)
+![Attacks](/Planning%20and%20Presentations/images/Attacks.png)
 
 
 ### Risk Matrix
-![Report](/docs/images/Report.png)
+![Report](/Planning%20and%20Presentations/images/Report.png)
 
 ## Link to Project
 [trojn.e-acres.com](https://trojn.e-acres.com)

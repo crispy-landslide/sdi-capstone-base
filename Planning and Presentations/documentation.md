@@ -82,4 +82,4 @@
 
 ## ERD
 
-![ERD](/docs/images/ERD.jpg)
+![ERD](/Planning%20and%20Presentations/images/ERD.jpg)
